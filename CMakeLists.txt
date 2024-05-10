@@ -6,4 +6,9 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(Sequences main.cpp
         Sequence.h
         ArraySequence.h
-        ListSequence.h)
+        ListSequence.h
+        Animal.cpp
+        Animal.h
+        DynamicArray.h
+        LinkedList.h
+)

@@ -12,43 +12,40 @@
 template<class T>
 class Sequence {
 public:
-    virtual T getFirst() const = 0; //получить первый элемент последовательности
+    Sequence() = default; //конструктор по умолчанию
 
-    virtual T getLast() const = 0; //получить последний элемент последовательности
+    virtual ~Sequence() = default; //деструктор по умолчанию
 
-    virtual T get(int index) const = 0; //получить элемент по индексу
+    //чисто виртуальная функция - функция, которая не имеет реализации в этом классе
+    virtual T getFirst() const = 0; //функция, которая возвращает первый элемент последовательности
 
-    virtual T operator[](int index) const = 0; //перегрузка оператора [] (то же самое, что и get)
+    virtual T getLast() const = 0; //функция, которая возвращает последний элемент последовательности
 
-    virtual Sequence<T> *getSubsequence(int startIndex, int endIndex) const = 0; //получить подпоследовательность
+    virtual T get(int index) const = 0; //функция, которая возвращает элемент последовательности по индексу
 
-    virtual int getLength() const = 0; //получить длину последовательности
+    virtual int getLength() const = 0; //функция, которая возвращает длину последовательности
 
-    virtual void append(T value) = 0; //добавить элемент в конец последовательности
+    virtual Sequence<T> *getSubsequence(int startIndex, int endIndex) const = 0; //функция, которая возвращает подпоследовательность
 
-    virtual void prepend(T value) = 0; //добавить элемент в начало последовательности
+    virtual void append(T value) = 0; //функция, которая добавляет элемент в конец последовательности
 
-    virtual void insertAt(T value, int index) = 0; //вставить элемент по индексу
+    virtual Sequence<T>* append_immutable(T value) const = 0; //функция, которая добавляет элемент в конец последовательности (не изменяя текущую)
 
-    virtual void set(int index, T value) = 0; //установить значение элемента по индексу
+    virtual void prepend(T value) = 0; //функция, которая добавляет элемент в начало последовательности
 
-    virtual Sequence<T> *concat(Sequence<T> *sequence) const = 0; //объединить две последовательности
+    virtual Sequence<T>* prepend_immutable(T value) const = 0; //функция, которая добавляет элемент в начало последовательности (не изменяя текущую)
 
-    virtual ~Sequence() = default; //виртуальный деструктор
+    virtual void insertAt(T value, int index) = 0; //функция, которая добавляет элемент в последовательность по индексу
 
-    //перегрузка оператора вывода в поток
-    friend std::ostream &operator<<(std::ostream &out, const Sequence<T> &sequence) {
-        //выводим все элементы последовательности в квадратных скобках через запятую
-        out << "[";
-        for (int i = 0; i < sequence.getLength(); i++) {
-            out << sequence[i];
-            if (i != sequence.getLength() - 1) {
-                out << ", ";
-            }
-        }
-        out << "]";
-        return out;
-    }
+    virtual Sequence<T>* insertAt_immutable(T value, int index) const = 0; //функция, которая добавляет элемент в последовательность по индексу (не изменяя текущую)
+
+    virtual void set(T value, int index) = 0; //функция, которая изменяет элемент в последовательности по индексу
+
+    virtual Sequence<T>* set_immutable(T value, int index) const = 0; //функция, которая изменяет элемент в последовательности по индексу (не изменяя текущую)
+
+    virtual Sequence<T> *concat(Sequence<T> *sequence) const = 0; //функция, которая объединяет две последовательности
+
+    virtual void print() const = 0; //функция, которая выводит последовательность на экран
 };
 
 

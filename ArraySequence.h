@@ -6,179 +6,147 @@
 #define SEQUENCES_ARRAYSEQUENCE_H
 
 #include "Sequence.h"
-#include <ostream>
 #include <stdexcept>
+#include "DynamicArray.h"
+#include <memory>
 
 //класс ArraySequence - класс, который реализует последовательность на основе обычного массива
-//Наследует класс Sequence, то есть мы должны реализовать все методы, которые в нем объявлены
+//Наследует класс Sequence, то есть мы должны реализовать все методы, которые в нем объявлен
+//Класс использует функции из класса DynamicArray для работы с массивом для скрытия реализации
 template<class T>
 class ArraySequence : public Sequence<T> {
-private:
-    T *array; //массив элементов
-    int length; //длина массива
+protected:
+    std::unique_ptr<DynamicArray<T>> arrayList; //список элементов последовательности
 public:
-    //Конструктор по умолчанию - создает пустой массив
-    ArraySequence() {
-        this->length = 0;
-        this->array = new T[0];
+    //Конструктор, который создает последовательность из массива
+    ArraySequence(T* items, int count){
+        //просто используем конструктор DynamicArray, чтобы создать массив из элементов
+        this->arrayList = std::make_unique<DynamicArray<T>>(items, count);
     }
 
-    //Конструктор, который принимает массив элементов и их количество и
-    //последовательность ArraySequence создается на основе этого массива
-    ArraySequence(T *items, int count) {
-        this->length = count;
-        this->array = new T[count];
-        for (int i = 0; i < count; i++) {
-            this->array[i] = items[i];
-        }
+    //Конструктор по умолчанию - создает пустую последовательность
+    ArraySequence(){
+        //просто используем конструктор DynamicArray, чтобы создать пустой массив
+        this->arrayList = std::make_unique<DynamicArray<T>>();
     }
 
-    //Конструктор копирования - создает копию последовательности ArraySequence
-    //При этом старый объект не изменяется
-    ArraySequence(const ArraySequence<T> &arraySequence) {
-        this->length = arraySequence.length;
-        this->array = new T[arraySequence.length];
-        for (int i = 0; i < arraySequence.length; i++) {
-            this->array[i] = arraySequence.array[i];
-        }
+    //Конструктор копирования - создает копию последовательности
+    ArraySequence(const ArraySequence<T> &arraySequence){
+        //просто используем конструктор DynamicArray, чтобы создать копию массива
+        this->arrayList = std::make_unique<DynamicArray<T>>(*arraySequence.arrayList);
     }
 
-    //Методы, которые мы должны реализовать из класса Sequence
-    T getFirst() const override { //получить первый элемент последовательности
-        return this->array[0];
+    //Функция, которая возвращает первый элемент последовательности
+    T getFirst() const override {
+        return this->arrayList->get(0); //просто возвращаем первый элемент массива
     }
 
-    T getLast() const override { //получить последний элемент последовательности
-        return this->array[this->length - 1];
+    //Функция, которая возвращает последний элемент последовательности
+    T getLast() const override {
+        return this->arrayList->get(this->arrayList->getLength() - 1);
     }
 
-    T get(int index) const override { //получить элемент по индексу
-        return this->array[index];
+    //Функция, которая возвращает элемент последовательности по индексу index
+    T get(int index) const override {
+        return this->arrayList->get(index);
     }
 
-    T operator[](int index) const override { //перегрузка оператора [] (то же самое, что и get)
-        return this->array[index];
-    }
-
-    //Получить подпоследовательность
+    //Функция, которая возвращает подпоследовательность от startIndex до endIndex
     ArraySequence<T> *getSubsequence(int startIndex, int endIndex) const override {
-        //Если индексы выходят за границы массива, то бросаем исключение (по условию задачи)
-        if (startIndex < 0 || startIndex >= this->length || endIndex < 0 || endIndex >= this->length) {
+        if (startIndex < 0 || startIndex >= this->arrayList->getLength() || endIndex < 0 || endIndex >= this->arrayList->getLength() || startIndex > endIndex) {
             throw std::out_of_range("Index out of range");
         }
-        if (startIndex > endIndex) {
-            throw std::invalid_argument("Start index is greater than end index");
-        }
-        //Создаем новый массив, в который будем копировать элементы (auto - автоматический тип данных)
-        //нужен для того, чтобы не писать длинное название типа данных (в данном случае не длинное, но все равно)
-        auto *subArray = new T[endIndex - startIndex + 1];
-        //Копируем элементы из старого массива в новый
+        T *items = new T[endIndex - startIndex + 1];
         for (int i = startIndex; i <= endIndex; i++) {
-            subArray[i - startIndex] = this->array[i];
+            items[i - startIndex] = this->arrayList->get(i);
         }
-        //Создаем новую последовательность на основе нового массива и возвращаем ее
-        return new ArraySequence(subArray, endIndex - startIndex + 1);
+        return new ArraySequence<T>(items, endIndex - startIndex + 1);
     }
 
-    //Получить длину последовательности
+    //Функция, которая возвращает длину последовательности
     int getLength() const override {
-        return this->length;
+        return this->arrayList->getLength();
     }
 
-    //Добавить элемент в конец последовательности
+    //Функция, которая добавляет элемент в конец последовательности
     void append(T value) override {
-        //Создаем новый массив, который на 1 больше старого
-        T *newArray = new T[this->length + 1];
-        //Копируем все элементы из старого массива в новый
-        for (int i = 0; i < this->length; i++) {
-            newArray[i] = this->array[i];
-        }
-        //Добавляем новый элемент в конец нового массива
-        newArray[this->length] = value;
-        //Удаляем старый массив и присваиваем новый
-        delete[] this->array;
-        this->array = newArray;
-        //Увеличиваем длину на 1
-        this->length++;
+        this->arrayList->append(value);
     }
 
-    //Добавить элемент в начало последовательности
+    //Функция, которая добавляет элемент в конец последовательности (не изменяя текущую)
+    ArraySequence<T>* append_immutable(T value) const override {
+        //создаем новую последовательность, которая является копией текущей
+        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
+        //добавляем элемент в конец новой последовательности
+        new_array->append(value);
+        //возвращаем новую последовательность
+        return new_array;
+    }
+
+    //Функция, которая добавляет элемент в начало последовательности
     void prepend(T value) override {
-        //Создаем новый массив, который на 1 больше старого
-        T *newArray = new T[this->length + 1];
-        //Добавляем новый элемент в начало нового массива
-        newArray[0] = value;
-        //Копируем все элементы из старого массива в новый
-        for (int i = 0; i < this->length; i++) {
-            newArray[i + 1] = this->array[i];
-        }
-        //Удаляем старый массив и присваиваем новый
-        delete[] this->array;
-        this->array = newArray;
-        //Увеличиваем длину на 1
-        this->length++;
+        this->arrayList->prepend(value);
     }
 
-    //Вставить элемент по индексу
+    //Функция, которая добавляет элемент в начало последовательности (не изменяя текущую)
+    ArraySequence<T>* prepend_immutable(T value) const override {
+        //создаем новую последовательность, которая является копией текущей
+        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
+        //добавляем элемент в начало новой последовательности
+        new_array->prepend(value);
+        //возвращаем новую последовательность
+        return new_array;
+    }
+
+    //Функция, которая добавляет элемент в последовательность по индексу
     void insertAt(T value, int index) override {
-        //Если индекс выходит за границы массива, то бросаем исключение (по условию задачи)
-        if (index < 0 || index >= this->length) {
-            throw std::out_of_range("Index out of range");
-        }
-        //Создаем новый массив, который на 1 больше старого (тут тоже можно писать auto)
-        T *newArray = new T[this->length + 1];
-        //Копируем все элементы до индекса из старого массива в новый
-        for (int i = 0; i < index; i++) {
-            newArray[i] = this->array[i];
-        }
-        //Добавляем новый элемент в новый массив
-        newArray[index] = value;
-        //Копируем все элементы после индекса из старого массива в новый
-        for (int i = index; i < this->length; i++) {
-            newArray[i + 1] = this->array[i];
-        }
-        //Удаляем старый массив и присваиваем новый
-        delete[] this->array;
-        this->array = newArray;
-        //Увеличиваем длину на 1
-        this->length++;
+        this->arrayList->insertAt(value, index);
     }
 
-    //Установить значение элемента по индексу
-    void set(int index, T value) override {
-        //Если индекс выходит за границы массива, то бросаем исключение (по условию задачи)
-        if (index < 0 || index >= this->length) {
-            throw std::out_of_range("Index out of range");
-        }
-        //Устанавливаем значение элемента по индексу
-        this->array[index] = value;
+    //Функция, которая добавляет элемент в последовательность по индексу (не изменяя текущую)
+    //работает по аналогии с предыдущими immutable-функциями
+    ArraySequence<T>* insertAt_immutable(T value, int index) const override {
+        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
+        new_array->insertAt(value, index);
+        return new_array;
     }
 
-    //Объединить две последовательности
+    //Функция, которая изменяет элемент в последовательности по индексу
+    void set(T value, int index) override {
+        this->arrayList->set(index, value);
+    }
+
+    //Функция, которая изменяет элемент в последовательности по индексу (не изменяя текущую)
+    ArraySequence<T>* set_immutable(T value, int index) const override {
+        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
+        new_array->set(value, index);
+        return new_array;
+    }
+
+    //Функция, которая объединяет две последовательности
     ArraySequence<T> *concat(Sequence<T> *sequence) const override {
-        //Если sequence не является ArraySequence, то бросаем исключение
-        auto *arraySequence = dynamic_cast<ArraySequence<T> *>(sequence);
-        if (arraySequence == nullptr) {
-            throw std::invalid_argument("Sequence is not ArraySequence");
+        //создаем новую последовательность, которая является копией текущей
+        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
+        //добавляем все элементы из второй последовательности в новую последовательность
+        for (int i = 0; i < sequence->getLength(); i++) {
+            new_array->append(sequence->get(i));
         }
-        //Создаем новый массив, который на сумму длин двух массивов
-        auto *newArray = new T[this->length + arraySequence->length];
-        //Копируем все элементы из первого массива в новый
-        for (int i = 0; i < this->length; i++) {
-            newArray[i] = this->array[i];
-        }
-        //Копируем все элементы из второго массива в новый
-        for (int i = 0; i < arraySequence->length; i++) {
-            newArray[this->length + i] = arraySequence->array[i];
-        }
-        //Создаем новую последовательность на основе нового массива и возвращаем ее
-        return new ArraySequence(newArray, this->length + arraySequence->length);
+        return new_array;
     }
 
-    //Деструктор - удаляет массив
-    ~ArraySequence() override {
-        delete[] this->array;
+    //Функция, которая выводит последовательность на экран
+    void print() const override {
+        std::cout << "[";
+        for (int i = 0; i < this->arrayList->getLength(); i++) {
+            std::cout << this->arrayList->get(i);
+            if (i != this->arrayList->getLength() - 1) {
+                std::cout << ", ";
+            }
+        }
+        std::cout << "]" << std::endl;
     }
+
+    ~ArraySequence() override = default; //деструктор по умолчанию (default, так как используем умные указатели)
 };
 
 #endif //SEQUENCES_ARRAYSEQUENCE_H
