@@ -146,7 +146,7 @@ public:
         std::cout << "]" << std::endl;
     }
 
-    ~ArraySequence() override = default; //деструктор по умолчанию (default, так как используем умные указатели)
+    ~ArraySequence() override = default; //деструктор по умолчанию (default, так как здесь используется умный указатель
 };
 
 #endif //SEQUENCES_ARRAYSEQUENCE_H
