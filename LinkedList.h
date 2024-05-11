@@ -44,7 +44,7 @@ public:
 
     //Конструктор копирования - создает копию списка
     LinkedList(const LinkedList<T> &linkedList){
-        this->length = linkedList.length;
+        this->length = 0;
         this->head = nullptr;
         this->tail = nullptr;
         //копируем все элементы из списка, вставляя их в конец нового списка через append()

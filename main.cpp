@@ -31,7 +31,9 @@ bool menu(){
                 std::cout << "8. InsertAt" << std::endl;
                 std::cout << "9. Prepend" << std::endl;
                 std::cout << "10. Set" << std::endl;
-                std::cout << "11. Exit" << std::endl;
+                std::cout << "11. Square all (2-power)" << std::endl;
+                std::cout << "12. Multiply all by 2" << std::endl;
+                std::cout << "13. Exit" << std::endl;
                 std::cin >> choice;
                 switch (choice) {
                     //добавление элемента в конец последовательности
@@ -165,7 +167,24 @@ bool menu(){
                     }
 
                     case 11: {
-                        //выход из программы
+                        //возводим все элементы в квадрат
+                        map([](int x) { return x * x; }, arraySequence.get());
+                        std::cout << "Now sequence is: ";
+                        //выводим последовательность
+                        arraySequence->print();
+                        break;
+                    }
+
+                    case 12: {
+                        //умножаем все элементы на 2
+                        map([](int x) { return x * 2; }, arraySequence.get());
+                        std::cout << "Now sequence is: ";
+                        //выводим последовательность
+                        arraySequence->print();
+                        break;
+                    }
+
+                    case 13: {
                         return true;
                     }
 
@@ -194,7 +213,9 @@ bool menu(){
                 std::cout << "8. InsertAt" << std::endl;
                 std::cout << "9. Prepend" << std::endl;
                 std::cout << "10. Set" << std::endl;
-                std::cout << "11. Exit" << std::endl;
+                std::cout << "11. Square all (2-power)" << std::endl;
+                std::cout << "12. Multiply all by 2" << std::endl;
+                std::cout << "13. Exit" << std::endl;
                 std::cin >> choice;
                 switch (choice) {
                     case 1: {
@@ -302,6 +323,20 @@ bool menu(){
                     }
 
                     case 11: {
+                        map([](int x) { return x * x; }, listSequence.get());
+                        std::cout << "Now sequence is: ";
+                        listSequence->print();
+                        break;
+                    }
+
+                    case 12: {
+                        map([](int x) { return x * 2; }, listSequence.get());
+                        std::cout << "Now sequence is: ";
+                        listSequence->print();
+                        break;
+                    }
+
+                    case 13: {
                         return true;
                     }
 

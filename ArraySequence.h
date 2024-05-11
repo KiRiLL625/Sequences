@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include "DynamicArray.h"
 #include <memory>
+#include <iostream>
 
 //класс ArraySequence - класс, который реализует последовательность на основе обычного массива
 //Наследует класс Sequence, то есть мы должны реализовать все методы, которые в нем объявлен
@@ -144,6 +145,14 @@ public:
             }
         }
         std::cout << "]" << std::endl;
+    }
+
+    DynamicArray<T>* getArray() const {
+        return this->arrayList.get();
+    }
+
+    T operator[](int index) const override {
+        return this->arrayList->get(index);
     }
 
     ~ArraySequence() override = default; //деструктор по умолчанию (default, так как здесь используется умный указатель

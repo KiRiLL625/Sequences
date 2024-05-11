@@ -3,7 +3,7 @@ project(Sequences)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Sequences main.cpp
+add_executable(Sequences
         Sequence.h
         ArraySequence.h
         ListSequence.h
@@ -11,4 +11,7 @@ add_executable(Sequences main.cpp
         Animal.h
         DynamicArray.h
         LinkedList.h
+        test.h
+        test.cpp
+        main_test.cpp
 )

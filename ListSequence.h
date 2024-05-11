@@ -8,7 +8,7 @@
 #include "Sequence.h"
 #include <memory>
 #include <stdexcept>
-#include <ostream>
+#include <iostream>
 #include "LinkedList.h"
 
 //класс ListSequence - класс, который реализует последовательность на основе двусвязного списка
@@ -105,7 +105,7 @@ public:
 
     //Функция, которая изменяет элемент в последовательности по индексу
     void set(T value, int index) override {
-        this->linkedList->set(index, value);
+        this->linkedList->set(value, index);
     }
 
     //Функция, которая объединяет две последовательности
@@ -134,6 +134,14 @@ public:
             }
         }
         std::cout << "]" << std::endl;
+    }
+
+    LinkedList<T>* getLinkedList() const {
+        return this->linkedList.get();
+    }
+
+    T operator[](int index) const override {
+        return this->linkedList->get(index);
     }
 
     ~ListSequence() override = default; //деструктор по умолчанию (default, так как используем умные указатели)
