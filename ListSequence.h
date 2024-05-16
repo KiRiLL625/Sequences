@@ -6,7 +6,6 @@
 #define SEQUENCES_LISTSEQUENCE_H
 
 #include "Sequence.h"
-#include <memory>
 #include <stdexcept>
 #include <iostream>
 #include "LinkedList.h"
@@ -15,21 +14,21 @@
 template<class T>
 class ListSequence : public Sequence<T> {
 private:
-    std::unique_ptr<LinkedList<T>> linkedList; //список элементов последовательности (точнее указатель)
+    LinkedList<T>* linkedList; //указатель на двусвязный список
 public:
     //Конструктор, который создает последовательность из массива
     ListSequence(T* items, int count){
-        this->linkedList = std::make_unique<LinkedList<T>>(items, count);
+        this->linkedList = new LinkedList<T>(items, count);
     }
 
     //Конструктор по умолчанию - создает пустую последовательность (использует конструктор LinkedList)
     ListSequence(){
-        this->linkedList = std::make_unique<LinkedList<T>>();
+        this->linkedList = new LinkedList<T>();
     }
 
     //Конструктор копирования - создает копию последовательности (использует конструктор LinkedList)
     ListSequence(const ListSequence<T> &listSequence){
-        this->linkedList = std::make_unique<LinkedList<T>>(*listSequence.linkedList);
+        this->linkedList = new LinkedList<T>(*listSequence.linkedList);
     }
 
     //Функция, которая возвращает первый элемент последовательности
@@ -65,47 +64,27 @@ public:
     }
 
     //Функция, которая добавляет элемент в конец последовательности
-    void append(T value) override {
+    Sequence<T>* append(T value) override {
         this->linkedList->append(value);
-    }
-
-    //Функция, которая добавляет элемент в конец последовательности (не изменяя текущую)
-    ListSequence<T> *append_immutable(T value) const override {
-        //создаем новый список на основе текущего
-        auto *newList = new ListSequence<T>(*this);
-        //добавляем элемент в конец нового списка
-        newList->linkedList->append(value);
-        //возвращаем новый список
-        return newList;
+        return this;
     }
 
     //Функция, которая добавляет элемент в начало последовательности
-    void prepend(T value) override {
+    Sequence<T>* prepend(T value) override {
         this->linkedList->prepend(value);
-    }
-
-    //Функция, которая добавляет элемент в начало последовательности (не изменяя текущую)
-    ListSequence<T> *prepend_immutable(T value) const override {
-        auto *newList = new ListSequence<T>(*this);
-        newList->linkedList->prepend(value);
-        return newList;
+        return this;
     }
 
     //Функция, которая добавляет элемент в последовательность по индексу index
-    void insertAt(T value, int index) override {
+    Sequence<T>* insertAt(T value, int index) override {
         this->linkedList->insertAt(value, index);
-    }
-
-    //Функция, которая добавляет элемент в последовательность по индексу index (не изменяя текущую)
-    ListSequence<T> *insertAt_immutable(T value, int index) const override {
-        auto *newList = new ListSequence<T>(*this);
-        newList->linkedList->insertAt(value, index);
-        return newList;
+        return this;
     }
 
     //Функция, которая изменяет элемент в последовательности по индексу
-    void set(T value, int index) override {
+    Sequence<T>* set(T value, int index) override {
         this->linkedList->set(value, index);
+        return this;
     }
 
     //Функция, которая объединяет две последовательности
@@ -114,13 +93,6 @@ public:
         for (int i = 0; i < sequence->getLength(); i++) {
             newList->append(sequence->get(i));
         }
-        return newList;
-    }
-
-    //Функция, которая изменяет элемент в последовательности по индексу (не изменяя текущую)
-    ListSequence<T> *set_immutable(T value, int index) const override {
-        auto *newList = new ListSequence<T>(*this);
-        newList->linkedList->set(index, value);
         return newList;
     }
 
@@ -136,15 +108,20 @@ public:
         std::cout << "]" << std::endl;
     }
 
+    //Функция, которая возвращает указатель на двусвязный список
     LinkedList<T>* getLinkedList() const {
-        return this->linkedList.get();
+        return this->linkedList;
     }
 
+    //Оператор [], который возвращает элемент последовательности по индексу index
     T operator[](int index) const override {
         return this->linkedList->get(index);
     }
 
-    ~ListSequence() override = default; //деструктор по умолчанию (default, так как используем умные указатели)
+    //Деструктор
+    ~ListSequence() override {
+        delete this->linkedList;
+    }
 };
 
 #endif //SEQUENCES_LISTSEQUENCE_H

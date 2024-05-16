@@ -13,43 +13,36 @@ class DynamicArray{
 private:
     T *array; //массив элементов
     int length; //длина массива
+    int capacity; //емкость массива
 public:
     //Конструктор по умолчанию - создает пустой массив
     DynamicArray(){
         this->length = 0;
-        this->array = new T[0];
+        this->capacity = 10;
+        this->array = new T[this->capacity];
     }
 
-    //Конструктор, который создает массив из другого массива
+    //Конструктор, который создает массив из массива items длины count
     DynamicArray(T* items, int count){
         this->length = count;
-        this->array = new T[count];
+        this->capacity = count;
+        this->array = new T[this->capacity];
         for (int i = 0; i < count; i++) {
             this->array[i] = items[i];
         }
     }
 
-    //Конструктор, который создает массив заданной длины
-    explicit DynamicArray(int size){
-        this->length = size;
-        this->array = new T[size];
-    }
-
     //Конструктор копирования - создает копию массива
-    DynamicArray(const DynamicArray<T> &arrayList){
-        this->length = arrayList.length;
-        this->array = new T[arrayList.length];
-        for (int i = 0; i < arrayList.length; i++) {
-            this->array[i] = arrayList.array[i];
+    DynamicArray(const DynamicArray<T> &dynamicArray){
+        this->length = dynamicArray.length;
+        this->capacity = dynamicArray.capacity;
+        this->array = new T[this->capacity];
+        for (int i = 0; i < this->length; i++) {
+            this->array[i] = dynamicArray.array[i];
         }
     }
 
-    //Деструктор - удаляет массив
-    ~DynamicArray(){
-        delete[] this->array;
-    }
-
-    //Функция, которая возвращает элемент массива по индексу
+    //Функция, которая возвращает элемент массива по индексу index
     T get(int index) const {
         if (index < 0 || index >= this->length) {
             throw std::out_of_range("Index out of range");
@@ -62,8 +55,44 @@ public:
         return this->length;
     }
 
-    //Функция, которая изменяет элемент массива по индексу
-    void set(int index, T value) {
+    //Функция, которая добавляет элемент value в конец массива
+    void append(T value){
+        if (this->length == this->capacity) {
+            this->resize();
+        }
+        this->array[this->length] = value;
+        this->length++;
+    }
+
+    //Функция, которая добавляет элемент value в начало массива
+    void prepend(T value){
+        if (this->length == this->capacity) {
+            this->resize();
+        }
+        for (int i = this->length; i > 0; i--) {
+            this->array[i] = this->array[i - 1];
+        }
+        this->array[0] = value;
+        this->length++;
+    }
+
+    //Функция, которая добавляет элемент value в массив по индексу index
+    void insertAt(T value, int index){
+        if (index < 0 || index >= this->length) {
+            throw std::out_of_range("Index out of range");
+        }
+        if (this->length == this->capacity) {
+            this->resize();
+        }
+        for (int i = this->length; i > index; i--) {
+            this->array[i] = this->array[i - 1];
+        }
+        this->array[index] = value;
+        this->length++;
+    }
+
+    //Функция, которая изменяет элемент массива по индексу index
+    void set(int index, T value){
         if (index < 0 || index >= this->length) {
             throw std::out_of_range("Index out of range");
         }
@@ -71,41 +100,18 @@ public:
     }
 
     //Функция, которая меняет размер массива
-    void resize(int newSize) {
-        T *newArray = new T[newSize];
-        for (int i = 0; i < this->length; i++) {
+    void resize(){
+        this->capacity *= 2; //увеличиваем емкость в два раза
+        T *newArray = new T[this->capacity]; //создаем новый массив
+        for (int i = 0; i < this->length; i++) { //копируем элементы в новый массив
             newArray[i] = this->array[i];
         }
         delete[] this->array;
         this->array = newArray;
-        this->length = newSize;
     }
 
-    //Функция, которая добавляет элемент в конец массива
-    void append(T value) {
-        this->resize(this->length + 1);
-        this->array[this->length - 1] = value;
-    }
-
-    //Функция, которая добавляет элемент в начало массива
-    void prepend(T value) {
-        this->resize(this->length + 1);
-        for (int i = this->length - 1; i > 0; i--) {
-            this->array[i] = this->array[i - 1];
-        }
-        this->array[0] = value;
-    }
-
-    //Функция, которая добавляет элемент в массив по индексу
-    void insertAt(T value, int index) {
-        if (index < 0 || index >= this->length) {
-            throw std::out_of_range("Index out of range");
-        }
-        this->resize(this->length + 1);
-        for (int i = this->length - 1; i > index; i--) {
-            this->array[i] = this->array[i - 1];
-        }
-        this->array[index] = value;
+    ~DynamicArray(){
+        delete[] this->array; //удаляем массив
     }
 };
 

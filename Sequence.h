@@ -30,21 +30,13 @@ public:
 
     virtual Sequence<T> *getSubsequence(int startIndex, int endIndex) const = 0; //функция, которая возвращает подпоследовательность
 
-    virtual void append(T value) = 0; //функция, которая добавляет элемент в конец последовательности
+    virtual Sequence<T>* append(T value) = 0; //функция, которая добавляет элемент в конец последовательности
 
-    virtual Sequence<T>* append_immutable(T value) const = 0; //функция, которая добавляет элемент в конец последовательности (не изменяя текущую)
+    virtual Sequence<T>* prepend(T value) = 0; //функция, которая добавляет элемент в начало последовательности
 
-    virtual void prepend(T value) = 0; //функция, которая добавляет элемент в начало последовательности
+    virtual Sequence<T>* insertAt(T value, int index) = 0; //функция, которая добавляет элемент в последовательность по индексу
 
-    virtual Sequence<T>* prepend_immutable(T value) const = 0; //функция, которая добавляет элемент в начало последовательности (не изменяя текущую)
-
-    virtual void insertAt(T value, int index) = 0; //функция, которая добавляет элемент в последовательность по индексу
-
-    virtual Sequence<T>* insertAt_immutable(T value, int index) const = 0; //функция, которая добавляет элемент в последовательность по индексу (не изменяя текущую)
-
-    virtual void set(T value, int index) = 0; //функция, которая изменяет элемент в последовательности по индексу
-
-    virtual Sequence<T>* set_immutable(T value, int index) const = 0; //функция, которая изменяет элемент в последовательности по индексу (не изменяя текущую)
+    virtual Sequence<T>* set(T value, int index) = 0; //функция, которая изменяет элемент в последовательности по индексу
 
     virtual Sequence<T> *concat(Sequence<T> *sequence) const = 0; //функция, которая объединяет две последовательности
 

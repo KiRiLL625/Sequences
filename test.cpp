@@ -6,9 +6,11 @@
 #include "ArraySequence.h"
 #include "ListSequence.h"
 #include "Sequence.h"
+#include "ImmutableArraySequence.h"
+#include "ImmutableListSequence.h"
 
 int tests_passed; //количество пройденных тестов
-const int total_tests = 118; //общее количество тестов
+const int total_tests = 122; //общее количество тестов
 
 //Проверка на создание пустой последовательности на основе массива
 void CREATE_ARRAY_SEQUENCE(){
@@ -90,22 +92,6 @@ void ARRAY_SEQUENCE_APPEND(){
     ASSERT_INT_EQ(3, arraySequence.getArray()->get(2));
 }
 
-//Проверка на добавление элементов в конец в последовательность (копию) на основе массива
-void ARRAY_SEQUENCE_APPEND_IMMUTABLE(){
-    ArraySequence<int> arraySequence;
-    arraySequence.append(1);
-    ArraySequence<int> *new_array = arraySequence.append_immutable(2);
-    ASSERT_INT_EQ(1, arraySequence.getLength());
-    ASSERT_INT_EQ(1, arraySequence.getArray()->get(0));
-    ASSERT_INT_EQ(2, new_array->getLength());
-    ASSERT_INT_EQ(1, new_array->getArray()->get(0));
-    ASSERT_INT_EQ(2, new_array->getArray()->get(1));
-    new_array->append(3);
-    ASSERT_INT_EQ(1, arraySequence.getLength());
-    ASSERT_INT_EQ(3, new_array->getLength());
-    ASSERT_INT_EQ(3, new_array->getArray()->get(2));
-}
-
 //Проверка на получение первого элемента последовательности на основе массива
 void ARRAY_SEQUENCE_GET_FIRST(){
     int items[] = {1, 2, 3, 4, 5};
@@ -182,22 +168,6 @@ void LIST_SEQUENCE_APPEND(){
     listSequence.append(3);
     ASSERT_INT_EQ(3, listSequence.getLength());
     ASSERT_INT_EQ(3, listSequence.getLinkedList()->get(2));
-}
-
-//Проверка на добавление элементов в последовательность (копию) на основе двусвязного списка
-void LIST_SEQUENCE_APPEND_IMMUTABLE(){
-    ListSequence<int> listSequence;
-    listSequence.append(1);
-    ListSequence<int> *new_list = listSequence.append_immutable(2);
-    ASSERT_INT_EQ(1, listSequence.getLength());
-    ASSERT_INT_EQ(1, listSequence.getLinkedList()->get(0));
-    ASSERT_INT_EQ(2, new_list->getLength());
-    ASSERT_INT_EQ(1, new_list->getLinkedList()->get(0));
-    ASSERT_INT_EQ(2, new_list->getLinkedList()->get(1));
-    new_list->append(3);
-    ASSERT_INT_EQ(1, listSequence.getLength());
-    ASSERT_INT_EQ(3, new_list->getLength());
-    ASSERT_INT_EQ(3, new_list->getLinkedList()->get(2));
 }
 
 //Проверка на получение первого элемента последовательности на основе двусвязного списка
@@ -314,4 +284,72 @@ void LIST_SEQUENCE_REDUCE(){
     ASSERT_INT_EQ(3, listSequence.get(2));
     ASSERT_INT_EQ(4, listSequence.get(3));
     ASSERT_INT_EQ(5, listSequence.get(4));
+}
+
+void IMMUTABLE_ARRAY_SEQUENCE_APPEND(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableArraySequence<int> immutableArraySequence(items, 5);
+    ImmutableArraySequence<int> *newImmutableArraySequence = immutableArraySequence.append(6);
+    ASSERT_INT_EQ(5, immutableArraySequence.getLength());
+    ASSERT_INT_EQ(6, newImmutableArraySequence->getLast());
+}
+
+void IMMUTABLE_ARRAY_SEQUENCE_PREPEND(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableArraySequence<int> immutableArraySequence(items, 5);
+    ImmutableArraySequence<int> *newImmutableArraySequence = immutableArraySequence.prepend(0);
+    ASSERT_INT_EQ(5, immutableArraySequence.getLength());
+    ASSERT_INT_EQ(0, newImmutableArraySequence->getFirst());
+}
+
+void IMMUTABLE_ARRAY_SEQUENCE_INSERT_AT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableArraySequence<int> immutableArraySequence(items, 5);
+    ImmutableArraySequence<int> *newImmutableArraySequence = immutableArraySequence.insertAt(2, 2);
+    ASSERT_INT_EQ(5, immutableArraySequence.getLength());
+    ASSERT_INT_EQ(2, newImmutableArraySequence->get(2));
+    ASSERT_INT_EQ(3, newImmutableArraySequence->get(3));
+    ASSERT_INT_EQ(4, newImmutableArraySequence->get(4));
+}
+
+void IMMUTABLE_ARRAY_SEQUENCE_SET(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableArraySequence<int> immutableArraySequence(items, 5);
+    ImmutableArraySequence<int> *newImmutableArraySequence = immutableArraySequence.set(10, 2);
+    ASSERT_INT_EQ(5, immutableArraySequence.getLength());
+    ASSERT_INT_EQ(10, newImmutableArraySequence->get(2));
+}
+
+void IMMUTABLE_LIST_SEQUENCE_APPEND(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableListSequence<int> immutableListSequence(items, 5);
+    ImmutableListSequence<int> *newImmutableListSequence = immutableListSequence.append(6);
+    ASSERT_INT_EQ(5, immutableListSequence.getLength());
+    ASSERT_INT_EQ(6, newImmutableListSequence->getLast());
+}
+
+void IMMUTABLE_LIST_SEQUENCE_PREPEND(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableListSequence<int> immutableListSequence(items, 5);
+    ImmutableListSequence<int> *newImmutableListSequence = immutableListSequence.prepend(0);
+    ASSERT_INT_EQ(5, immutableListSequence.getLength());
+    ASSERT_INT_EQ(0, newImmutableListSequence->getFirst());
+}
+
+void IMMUTABLE_LIST_SEQUENCE_INSERT_AT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableListSequence<int> immutableListSequence(items, 5);
+    ImmutableListSequence<int> *newImmutableListSequence = immutableListSequence.insertAt(2, 2);
+    ASSERT_INT_EQ(5, immutableListSequence.getLength());
+    ASSERT_INT_EQ(2, newImmutableListSequence->get(2));
+    ASSERT_INT_EQ(3, newImmutableListSequence->get(3));
+    ASSERT_INT_EQ(4, newImmutableListSequence->get(4));
+}
+
+void IMMUTABLE_LIST_SEQUENCE_SET(){
+    int items[] = {1, 2, 3, 4, 5};
+    ImmutableListSequence<int> immutableListSequence(items, 5);
+    ImmutableListSequence<int> *newImmutableListSequence = immutableListSequence.set(10, 2);
+    ASSERT_INT_EQ(5, immutableListSequence.getLength());
+    ASSERT_INT_EQ(10, newImmutableListSequence->get(2));
 }

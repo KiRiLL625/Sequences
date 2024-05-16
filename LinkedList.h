@@ -5,7 +5,6 @@
 #ifndef SEQUENCES_LINKEDLIST_H
 #define SEQUENCES_LINKEDLIST_H
 
-#include <memory>
 #include <stdexcept>
 
 //класс LinkedList - класс, который реализует двусвязный список
@@ -15,14 +14,15 @@ private:
     //структура Node - структура, которая представляет узел списка
     struct Node {
         T value; //значение узла
-        std::shared_ptr<Node> next; //указатель на следующий узел
-        std::shared_ptr<Node> prev; //указатель на предыдущий узел
+        Node* next; //указатель на следующий узел
+        Node* prev; //указатель на предыдущий узел
         //Конструктор узла - создает узел с заданным значением
-        Node(T value) : value(value), next(nullptr), prev(nullptr) {}
+        explicit Node(T value) : value(value), next(nullptr), prev(nullptr) {}
+        ~Node() = default;
     };
 
-    std::shared_ptr<Node> head; //указатель на начало списка
-    std::shared_ptr<Node> tail; //указатель на конец списка
+    Node* head; //указатель на начало списка
+    Node* tail; //указатель на конец списка
     int length; //длина списка
 public:
     //Конструктор, который создает список из массива
@@ -48,7 +48,7 @@ public:
         this->head = nullptr;
         this->tail = nullptr;
         //копируем все элементы из списка, вставляя их в конец нового списка через append()
-        std::shared_ptr<Node> current = linkedList.head;
+        Node* current = linkedList.head;
         while (current != nullptr) {
             this->append(current->value);
             current = current->next;
@@ -77,7 +77,7 @@ public:
         if (index < 0 || index >= this->length) {
             throw std::out_of_range("Index out of range");
         }
-        std::shared_ptr<Node> current = this->head; //начинаем с начала списка
+        Node* current = this->head; //начинаем с начала списка
         //проходим по списку до нужного индекса
         for (int i = 0; i < index; i++) {
             current = current->next;
@@ -92,7 +92,7 @@ public:
         }
         //создаем новый список, в который будем добавлять элементы
         T *items = new T[endIndex - startIndex + 1];
-        std::shared_ptr<Node> current = this->head; //начинаем с начала списка
+        Node* current = this->head; //начинаем с начала списка
         for (int i = 0; i < startIndex; i++) {
             current = current->next;
         }
@@ -113,7 +113,7 @@ public:
     //Функция, которая добавляет элемент в конец списка
     void append(T value) {
         //создаем новый узел с заданным значением
-        std::shared_ptr<Node> newNode = std::make_shared<Node>(value);
+        Node* newNode = new Node(value);
         //если список пустой, то новый узел становится началом и концом списка
         if (this->length == 0) {
             this->head = newNode;
@@ -129,7 +129,7 @@ public:
     //Функция, которая добавляет элемент в начало списка
     void prepend(T value) {
         //создаем новый узел с заданным значением
-        std::shared_ptr<Node> newNode = std::make_shared<Node>(value);
+        Node* newNode = new Node(value);
         //если список пустой, то новый узел становится началом и концом списка
         if (this->length == 0) {
             this->head = newNode;
@@ -154,8 +154,8 @@ public:
             this->append(value);
         } else {
             //создаем новый узел с заданным значением
-            std::shared_ptr<Node> newNode = std::make_shared<Node>(value);
-            std::shared_ptr<Node> current = this->head; //начинаем с начала списка
+            Node* newNode = new Node(value);
+            Node* current = this->head; //начинаем с начала списка
             //проходим по списку до нужного индекса
             for (int i = 0; i < index; i++) {
                 current = current->next;
@@ -175,7 +175,7 @@ public:
         if (index < 0 || index >= this->length) {
             throw std::out_of_range("Index out of range");
         }
-        std::shared_ptr<Node> current = this->head; //начинаем с начала списка
+        Node* current = this->head; //начинаем с начала списка
         //проходим по списку до нужного индекса
         for (int i = 0; i < index; i++) {
             current = current->next;
@@ -187,12 +187,21 @@ public:
     //Функция, которая объединяет два списка
     LinkedList<T>* concat(LinkedList<T>* list) const {
         LinkedList<T>* newList = new LinkedList<T>(*this);
-        std::shared_ptr<Node> current = list->head;
+        Node* current = list->head; //начинаем с начала второго списка
         while (current != nullptr) {
             newList->append(current->value);
             current = current->next;
         }
         return newList;
+    }
+
+    ~LinkedList() { //деструктор
+        Node* current = this->head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
     }
 };
 

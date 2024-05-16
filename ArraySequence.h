@@ -8,7 +8,6 @@
 #include "Sequence.h"
 #include <stdexcept>
 #include "DynamicArray.h"
-#include <memory>
 #include <iostream>
 
 //класс ArraySequence - класс, который реализует последовательность на основе обычного массива
@@ -17,24 +16,24 @@
 template<class T>
 class ArraySequence : public Sequence<T> {
 protected:
-    std::unique_ptr<DynamicArray<T>> arrayList; //список элементов последовательности
+    DynamicArray<T> *arrayList; //указатель на массив
 public:
     //Конструктор, который создает последовательность из массива
     ArraySequence(T* items, int count){
         //просто используем конструктор DynamicArray, чтобы создать массив из элементов
-        this->arrayList = std::make_unique<DynamicArray<T>>(items, count);
+        this->arrayList = new DynamicArray<T>(items, count);
     }
 
     //Конструктор по умолчанию - создает пустую последовательность
     ArraySequence(){
         //просто используем конструктор DynamicArray, чтобы создать пустой массив
-        this->arrayList = std::make_unique<DynamicArray<T>>();
+        this->arrayList = new DynamicArray<T>();
     }
 
     //Конструктор копирования - создает копию последовательности
     ArraySequence(const ArraySequence<T> &arraySequence){
         //просто используем конструктор DynamicArray, чтобы создать копию массива
-        this->arrayList = std::make_unique<DynamicArray<T>>(*arraySequence.arrayList);
+        this->arrayList = new DynamicArray<T>(*arraySequence.arrayList);
     }
 
     //Функция, которая возвращает первый элемент последовательности
@@ -70,58 +69,27 @@ public:
     }
 
     //Функция, которая добавляет элемент в конец последовательности
-    void append(T value) override {
+    Sequence<T>* append(T value) override {
         this->arrayList->append(value);
-    }
-
-    //Функция, которая добавляет элемент в конец последовательности (не изменяя текущую)
-    ArraySequence<T>* append_immutable(T value) const override {
-        //создаем новую последовательность, которая является копией текущей
-        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
-        //добавляем элемент в конец новой последовательности
-        new_array->append(value);
-        //возвращаем новую последовательность
-        return new_array;
+        return this;
     }
 
     //Функция, которая добавляет элемент в начало последовательности
-    void prepend(T value) override {
+    Sequence<T>* prepend(T value) override {
         this->arrayList->prepend(value);
-    }
-
-    //Функция, которая добавляет элемент в начало последовательности (не изменяя текущую)
-    ArraySequence<T>* prepend_immutable(T value) const override {
-        //создаем новую последовательность, которая является копией текущей
-        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
-        //добавляем элемент в начало новой последовательности
-        new_array->prepend(value);
-        //возвращаем новую последовательность
-        return new_array;
+        return this;
     }
 
     //Функция, которая добавляет элемент в последовательность по индексу
-    void insertAt(T value, int index) override {
+    Sequence<T>* insertAt(T value, int index) override {
         this->arrayList->insertAt(value, index);
-    }
-
-    //Функция, которая добавляет элемент в последовательность по индексу (не изменяя текущую)
-    //работает по аналогии с предыдущими immutable-функциями
-    ArraySequence<T>* insertAt_immutable(T value, int index) const override {
-        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
-        new_array->insertAt(value, index);
-        return new_array;
+        return this;
     }
 
     //Функция, которая изменяет элемент в последовательности по индексу
-    void set(T value, int index) override {
+    Sequence<T>* set(T value, int index) override {
         this->arrayList->set(index, value);
-    }
-
-    //Функция, которая изменяет элемент в последовательности по индексу (не изменяя текущую)
-    ArraySequence<T>* set_immutable(T value, int index) const override {
-        ArraySequence<T> *new_array = new ArraySequence<T>(*this);
-        new_array->set(value, index);
-        return new_array;
+        return this;
     }
 
     //Функция, которая объединяет две последовательности
@@ -147,15 +115,19 @@ public:
         std::cout << "]" << std::endl;
     }
 
+    //Функция, которая возвращает массив, который хранит элементы последовательности
     DynamicArray<T>* getArray() const {
-        return this->arrayList.get();
+        return this->arrayList;
     }
 
+    //Оператор [], который возвращает элемент последовательности по индексу
     T operator[](int index) const override {
         return this->arrayList->get(index);
     }
 
-    ~ArraySequence() override = default; //деструктор по умолчанию (default, так как здесь используется умный указатель
+    ~ArraySequence() { //деструктор
+        delete this->arrayList;
+    }
 };
 
 #endif //SEQUENCES_ARRAYSEQUENCE_H

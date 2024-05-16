@@ -1,8 +1,7 @@
 #include <iostream>
-#include <memory>
 #include "ArraySequence.h"
 #include "ListSequence.h"
-#include "Animal.h"
+#include "Sequence.h"
 
 //функция меню
 bool menu(){
@@ -17,7 +16,7 @@ bool menu(){
         //работа с ArraySequence
         case 1: {
             //создание указателя на объект класса ArraySequence через родительский класс Sequence
-            std::unique_ptr<Sequence<int>> arraySequence = std::make_unique<ArraySequence<int>>();
+            Sequence<int>* arraySequence = new ArraySequence<int>();
             int choice;
             do {
                 //меню
@@ -168,7 +167,7 @@ bool menu(){
 
                     case 11: {
                         //возводим все элементы в квадрат
-                        map([](int x) { return x * x; }, arraySequence.get());
+                        map([](int x) { return x * x; }, arraySequence);
                         std::cout << "Now sequence is: ";
                         //выводим последовательность
                         arraySequence->print();
@@ -177,7 +176,7 @@ bool menu(){
 
                     case 12: {
                         //умножаем все элементы на 2
-                        map([](int x) { return x * 2; }, arraySequence.get());
+                        map([](int x) { return x * 2; }, arraySequence);
                         std::cout << "Now sequence is: ";
                         //выводим последовательность
                         arraySequence->print();
@@ -200,7 +199,7 @@ bool menu(){
         case 2: {
             //создание указателя на объект класса ListSequence через родительский класс Sequence
             //дальше то же самое, что и с ArraySequence
-            std::unique_ptr<Sequence<int>> listSequence = std::make_unique<ListSequence<int>>();
+            Sequence<int>* listSequence = new ListSequence<int>();
             int choice;
             do {
                 std::cout << "1. Append" << std::endl;
@@ -323,14 +322,14 @@ bool menu(){
                     }
 
                     case 11: {
-                        map([](int x) { return x * x; }, listSequence.get());
+                        map([](int x) { return x * x; }, listSequence);
                         std::cout << "Now sequence is: ";
                         listSequence->print();
                         break;
                     }
 
                     case 12: {
-                        map([](int x) { return x * 2; }, listSequence.get());
+                        map([](int x) { return x * 2; }, listSequence);
                         std::cout << "Now sequence is: ";
                         listSequence->print();
                         break;
