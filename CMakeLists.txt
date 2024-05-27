@@ -9,12 +9,27 @@ add_executable(Sequences
         ListSequence.h
         DynamicArray.h
         LinkedList.h
-        test.h
-        test.cpp
         main.cpp
         ImmutableArraySequence.h
         ImmutableListSequence.h
-        #ArrayQueue.h
-        #ListQueue.h
-        #Queue.h
+        ArrayQueue.h
+        ListQueue.h
+        Queue.h
+)
+
+add_executable(
+        Test
+        Sequence.h
+        ArraySequence.h
+        ListSequence.h
+        DynamicArray.h
+        LinkedList.h
+        test.cpp
+        ImmutableArraySequence.h
+        ImmutableListSequence.h
+        ArrayQueue.h
+        ListQueue.h
+        Queue.h
+        test.h
+        main_test.cpp
 )

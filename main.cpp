@@ -2,8 +2,11 @@
 #include "ArraySequence.h"
 #include "ListSequence.h"
 #include "Sequence.h"
+#include "ArrayQueue.h"
+#include "ListQueue.h"
 
 //функция меню
+/*
 bool menu(){
     std::cout << "Choose sequence type" << std::endl;
     std::cout << "1. ArraySequence" << std::endl;
@@ -356,6 +359,240 @@ bool menu(){
     }
     //возвращаем true, чтобы цикл в main продолжался
     return true;
+}
+*/
+
+bool menu(){
+    std::cout << "Choose sequence type" << std::endl;
+    std::cout << "1. ArrayQueue" << std::endl;
+    std::cout << "2. ListQueue" << std::endl;
+    std::cout << "3. Exit" << std::endl;
+    int choice;
+    std::cin >> choice;
+    switch (choice) {
+        case 1: {
+            Queue<int>* arrayQueue = new ArrayQueue<int>();
+            int choice;
+            do {
+                std::cout << "1. Push" << std::endl;
+                std::cout << "2. Pop" << std::endl;
+                std::cout << "3. GetLength" << std::endl;
+                std::cout << "4. GetSubQueue" << std::endl;
+                std::cout << "5. Split" << std::endl;
+                std::cout << "6. Concat" << std::endl;
+                std::cout << "7. FindSubQueue" << std::endl;
+                std::cout << "8. Exit" << std::endl;
+                std::cin >> choice;
+                switch (choice) {
+                    case 1: {
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        arrayQueue->push(value);
+                        std::cout << "Now queue is: ";
+                        arrayQueue->print();
+                        break;
+                    }
+
+                    case 2: {
+                        try {
+                            arrayQueue->pop();
+                            std::cout << "Now queue is: ";
+                            arrayQueue->print();
+                        }
+                        catch (std::out_of_range &e) {
+                            std::cout << "Queue is empty" << std::endl;
+                        }
+                        break;
+                    }
+
+                    case 3: {
+                        std::cout << "Length is: " << arrayQueue->getLength() << std::endl;
+                        break;
+                    }
+
+                    case 4: {
+                        int startIndex, endIndex;
+                        std::cout << "Enter start index: ";
+                        std::cin >> startIndex;
+                        std::cout << "Enter end index: ";
+                        std::cin >> endIndex;
+                        try {
+                            auto subQueue = arrayQueue->getSubQueue(startIndex, endIndex);
+                            std::cout << "Subqueue is: ";
+                            subQueue->print();
+                        }
+                        catch (std::out_of_range &e) {
+                            std::cout << "Index out of range" << std::endl;
+                        }
+                        break;
+                    }
+
+                    case 5: {
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        auto [firstQueue, secondQueue] = arrayQueue->split(
+                                [value](int x) { return x < value ? true : false; });
+                        std::cout << "First queue is: ";
+                        firstQueue->print();
+                        std::cout << "Second queue is: ";
+                        secondQueue->print();
+                        break;
+                    }
+
+                    case 6: {
+                        Queue<int> *newQueue = new ArrayQueue<int>();
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        newQueue->push(value);
+                        auto concatedQueue = arrayQueue->concat(newQueue);
+                        std::cout << "Concatenated queue is: ";
+                        concatedQueue->print();
+                        break;
+                    }
+
+                    case 7: {
+                        Queue<int> *subQueue = new ArrayQueue<int>();
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        subQueue->push(value);
+                        std::cout << "Index is: " << arrayQueue->findSubQueue(subQueue) << std::endl;
+                        break;
+                    }
+
+                    case 8: {
+                        return true;
+                    }
+
+                    default: {
+                        std::cout << "Wrong choice" << std::endl;
+                        break;
+                    }
+                }
+            } while (true);
+            delete arrayQueue;
+            break;
+        }
+
+        case 2: {
+            Queue<int> *listQueue = new ListQueue<int>();
+            int choice;
+            do {
+                std::cout << "1. Push" << std::endl;
+                std::cout << "2. Pop" << std::endl;
+                std::cout << "3. GetLength" << std::endl;
+                std::cout << "4. GetSubQueue" << std::endl;
+                std::cout << "5. Split" << std::endl;
+                std::cout << "6. Concat" << std::endl;
+                std::cout << "7. FindSubQueue" << std::endl;
+                std::cout << "8. Exit" << std::endl;
+                std::cin >> choice;
+                switch (choice) {
+                    case 1: {
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        listQueue->push(value);
+                        std::cout << "Now queue is: ";
+                        listQueue->print();
+                        break;
+                    }
+
+                    case 2: {
+                        try {
+                            listQueue->pop();
+                            std::cout << "Now queue is: ";
+                            listQueue->print();
+                        }
+                        catch (std::out_of_range &e) {
+                            std::cout << "Queue is empty" << std::endl;
+                        }
+                        break;
+                    }
+
+                    case 3: {
+                        std::cout << "Length is: " << listQueue->getLength() << std::endl;
+                        break;
+                    }
+
+                    case 4: {
+                        int startIndex, endIndex;
+                        std::cout << "Enter start index: ";
+                        std::cin >> startIndex;
+                        std::cout << "Enter end index: ";
+                        std::cin >> endIndex;
+                        try {
+                            auto subQueue = listQueue->getSubQueue(startIndex, endIndex);
+                            std::cout << "Subqueue is: ";
+                            subQueue->print();
+                        }
+                        catch (std::out_of_range &e) {
+                            std::cout << "Index out of range" << std::endl;
+                        }
+                        break;
+                    }
+
+                    case 5: {
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        auto [firstQueue, secondQueue] = listQueue->split(
+                                [value](int x) { return x < value ? true : false; });
+                        std::cout << "First queue is: ";
+                        firstQueue->print();
+                        std::cout << "Second queue is: ";
+                        secondQueue->print();
+                        break;
+                    }
+
+                    case 6: {
+                        Queue<int> *newQueue = new ListQueue<int>();
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        newQueue->push(value);
+                        auto concatedQueue = listQueue->concat(newQueue);
+                        std::cout << "Concatenated queue is: ";
+                        concatedQueue->print();
+                        break;
+                    }
+
+                    case 7: {
+                        Queue<int> *subQueue = new ListQueue<int>();
+                        int value;
+                        std::cout << "Enter value: ";
+                        std::cin >> value;
+                        subQueue->push(value);
+                        std::cout << "Index is: " << listQueue->findSubQueue(subQueue) << std::endl;
+                        break;
+                    }
+
+                    case 8: {
+                        return true;
+                    }
+
+                    default: {
+                        std::cout << "Wrong choice" << std::endl;
+                        break;
+                    }
+                }
+            } while (true);
+            delete listQueue;
+            break;
+        }
+
+        case 3:
+            return false;
+
+        default:
+            std::cout << "Wrong choice" << std::endl;
+            break;
+
+        return true;
+    }
 }
 
 int main() {

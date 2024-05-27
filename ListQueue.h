@@ -50,7 +50,7 @@ public:
         return this->listQueue->getLength();
     }
 
-    ListQueue<T>* getSubQueue(int startIndex, int endIndex) const override {
+    Queue<T>* getSubQueue(int startIndex, int endIndex) const override {
         if (startIndex < 0 || startIndex >= this->listQueue->getLength() || endIndex < 0 || endIndex >= this->listQueue->getLength() || startIndex > endIndex) {
             throw std::out_of_range("Index out of range");
         }
@@ -61,7 +61,7 @@ public:
         return new ListQueue<T>(items, endIndex - startIndex + 1);
     }
 
-    std::tuple<ListQueue<T>*, ListQueue<T>*> split(std::function<bool(T)> predicate) const override {
+    std::tuple<Queue<T>*, Queue<T>*> split(std::function<bool(T)> predicate) const override {
         auto* firstQueue = new ListQueue<T>();
         auto* secondQueue = new ListQueue<T>();
         for (int i = 0; i < this->listQueue->getLength(); i++) {
@@ -74,7 +74,7 @@ public:
         return std::make_tuple(firstQueue, secondQueue);
     }
 
-    ListQueue<T>* concat(ListQueue<T>* listQueue) const override {
+    Queue<T>* concat(Queue<T>* listQueue) const override {
         auto* newQueue = new ListQueue<T>(*this);
         for (int i = 0; i < listQueue->getLength(); i++) {
             newQueue->push(listQueue->listQueue->get(i));
@@ -82,7 +82,7 @@ public:
         return newQueue;
     }
 
-    int findSubQueue(ListQueue<T>* subQueue) const override {
+    int findSubQueue(Queue<T>* subQueue) const override {
         if (subQueue->getLength() == 0 || subQueue->getLength() > this->listQueue->getLength()) {
             return -1;
         }
@@ -99,6 +99,10 @@ public:
             }
         }
         return -1;
+    }
+
+    void print() const override{
+        this->listQueue->print();
     }
 
     ~ListQueue() override {

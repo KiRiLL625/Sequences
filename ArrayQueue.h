@@ -52,8 +52,12 @@ public:
         return this->arrayQueue->getLength(); //Получение длины массива
     }
 
+    void print() const override{
+        this->arrayQueue->print(); //Вывод массива
+    }
+
     //Получение подочереди
-    ArrayQueue<T>* getSubQueue(int startIndex, int endIndex) const override {
+    Queue<T>* getSubQueue(int startIndex, int endIndex) const override {
         //Если индексы некорректны, то генерируется исключение
         if (startIndex < 0 || startIndex >= this->arrayQueue->getLength() || endIndex < 0 || endIndex >= this->arrayQueue->getLength() || startIndex > endIndex) {
             throw std::out_of_range("Index out of range");
@@ -66,7 +70,7 @@ public:
     }
 
     //Разделение очереди на две по предикату
-    std::tuple<ArrayQueue<T>*, ArrayQueue<T>*> split(std::function<bool(T)> predicate) const override {
+    std::tuple<Queue<T>*, Queue<T>*> split(std::function<bool(T)> predicate) const override {
         //Создание двух пустых очередей
         auto* firstQueue = new ArrayQueue<T>();
         auto* secondQueue = new ArrayQueue<T>();
@@ -83,7 +87,7 @@ public:
     }
 
     //Сцепление двух очередей
-    ArrayQueue<T>* concat(ArrayQueue<T>* arrayQueue) const override {
+    Queue<T>* concat(Queue<T>* arrayQueue) const override {
         //Создание новой очереди
         auto* newQueue = new ArrayQueue<T>(*this);
         //Добавление элементов из второй очереди
@@ -94,7 +98,7 @@ public:
     }
 
     //поиск на вхождение подочереди
-    int findSubQueue(ArrayQueue<T>* subQueue) const override {
+    int findSubQueue(Queue<T>* subQueue) const override {
         //Если длина подочереди больше длины массива или длина подочереди равна 0, то возвращается -1
         if (subQueue->getLength() == 0 || subQueue->getLength() > this->arrayQueue->getLength()) {
             return -1;

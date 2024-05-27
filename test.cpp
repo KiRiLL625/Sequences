@@ -8,6 +8,9 @@
 #include "Sequence.h"
 #include "ImmutableArraySequence.h"
 #include "ImmutableListSequence.h"
+#include "ArrayQueue.h"
+#include "ListQueue.h"
+#include "Queue.h"
 
 int tests_passed; //количество пройденных тестов
 const int total_tests = 122; //общее количество тестов
@@ -353,3 +356,191 @@ void IMMUTABLE_LIST_SEQUENCE_SET(){
     ASSERT_INT_EQ(5, immutableListSequence.getLength());
     ASSERT_INT_EQ(10, newImmutableListSequence->get(2));
 }
+
+void CREATE_ARRAY_QUEUE(){
+    ArrayQueue<int> arrayQueue;
+    ASSERT_INT_EQ(0, arrayQueue.getLength());
+    ASSERT_NOT_NULL(arrayQueue.getArray());
+    ASSERT_INT_EQ(0, arrayQueue.getArray()->getLength());
+}
+
+void CREATE_ARRAY_QUEUE_FROM_ARRAY(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    ASSERT_INT_EQ(5, arrayQueue.getLength());
+    ASSERT_NOT_NULL(arrayQueue.getArray());
+    ASSERT_INT_EQ(5, arrayQueue.getArray()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], arrayQueue.getArray()->get(i));
+    }
+}
+
+void COPY_ARRAY_QUEUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    ArrayQueue<int> arrayQueueCopy(arrayQueue);
+    ASSERT_INT_EQ(5, arrayQueueCopy.getLength());
+    ASSERT_NOT_NULL(arrayQueueCopy.getArray());
+    ASSERT_INT_EQ(5, arrayQueueCopy.getArray()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], arrayQueueCopy.getArray()->get(i));
+    }
+}
+
+void ARRAY_QUEUE_PUSH(){
+    ArrayQueue<int> arrayQueue;
+    arrayQueue.push(1);
+    ASSERT_INT_EQ(1, arrayQueue.getLength());
+    ASSERT_INT_EQ(1, arrayQueue.getArray()->get(0));
+    arrayQueue.push(2);
+    ASSERT_INT_EQ(2, arrayQueue.getLength());
+    ASSERT_INT_EQ(2, arrayQueue.getArray()->get(1));
+    arrayQueue.push(3);
+    ASSERT_INT_EQ(3, arrayQueue.getLength());
+    ASSERT_INT_EQ(3, arrayQueue.getArray()->get(2));
+}
+
+void ARRAY_QUEUE_FRONT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    ASSERT_INT_EQ(1, arrayQueue.front());
+}
+
+void ARRAY_QUEUE_POP(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    arrayQueue.pop();
+    ASSERT_INT_EQ(4, arrayQueue.getLength());
+    ASSERT_INT_EQ(2, arrayQueue.getArray()->get(0));
+    ASSERT_INT_EQ(3, arrayQueue.getArray()->get(1));
+    ASSERT_INT_EQ(4, arrayQueue.getArray()->get(2));
+    ASSERT_INT_EQ(5, arrayQueue.getArray()->get(3));
+}
+
+void ARRAY_QUEUE_GET_SUB_QUEUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    ArrayQueue<int> *subArrayQueue = arrayQueue.getSubQueue(1, 3);
+    ASSERT_INT_EQ(3, subArrayQueue->getLength());
+    ASSERT_INT_EQ(2, subArrayQueue->getArray()->get(0));
+    ASSERT_INT_EQ(3, subArrayQueue->getArray()->get(1));
+    ASSERT_INT_EQ(4, subArrayQueue->getArray()->get(2));
+}
+
+void ARRAY_QUEUE_OUT_OF_RANGE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    try {
+        arrayQueue.getSubQueue(1, 10);
+    } catch (std::out_of_range &e) {
+        ASSERT_STRING_EQ("Index out of range", e.what());
+    }
+}
+
+void ARRAY_QUEUE_SPLIT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayQueue<int> arrayQueue(items, 5);
+    auto [firstQueue, secondQueue] = arrayQueue.split([](int x) { return x % 2 == 0; });
+    ASSERT_INT_EQ(2, firstQueue->getLength());
+    ASSERT_INT_EQ(2, firstQueue->getArray()->get(0));
+    ASSERT_INT_EQ(4, firstQueue->getArray()->get(1));
+    ASSERT_INT_EQ(3, secondQueue->getLength());
+    ASSERT_INT_EQ(1, secondQueue->getArray()->get(0));
+    ASSERT_INT_EQ(3, secondQueue->getArray()->get(1));
+    ASSERT_INT_EQ(5, secondQueue->getArray()->get(2));
+}
+
+void CREATE_LIST_QUEUE(){
+    ListQueue<int> listQueue;
+    ASSERT_INT_EQ(0, listQueue.getLength());
+    ASSERT_NOT_NULL(listQueue.getLinkedList());
+    ASSERT_INT_EQ(0, listQueue.getLinkedList()->getLength());
+}
+
+void CREATE_LIST_QUEUE_FROM_ARRAY(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    ASSERT_INT_EQ(5, listQueue.getLength());
+    ASSERT_NOT_NULL(listQueue.getLinkedList());
+    ASSERT_INT_EQ(5, listQueue.getLinkedList()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], listQueue.getLinkedList()->get(i));
+    }
+}
+
+void COPY_LIST_QUEUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    ListQueue<int> listQueueCopy(listQueue);
+    ASSERT_INT_EQ(5, listQueueCopy.getLength());
+    ASSERT_NOT_NULL(listQueueCopy.getLinkedList());
+    ASSERT_INT_EQ(5, listQueueCopy.getLinkedList()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], listQueueCopy.getLinkedList()->get(i));
+    }
+}
+
+void LIST_QUEUE_PUSH(){
+    ListQueue<int> listQueue;
+    listQueue.push(1);
+    ASSERT_INT_EQ(1, listQueue.getLength());
+    ASSERT_INT_EQ(1, listQueue.getLinkedList()->get(0));
+    listQueue.push(2);
+    ASSERT_INT_EQ(2, listQueue.getLength());
+    ASSERT_INT_EQ(2, listQueue.getLinkedList()->get(1));
+    listQueue.push(3);
+    ASSERT_INT_EQ(3, listQueue.getLength());
+    ASSERT_INT_EQ(3, listQueue.getLinkedList()->get(2));
+}
+
+void LIST_QUEUE_FRONT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    ASSERT_INT_EQ(1, listQueue.front());
+}
+
+void LIST_QUEUE_POP(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    listQueue.pop();
+    ASSERT_INT_EQ(4, listQueue.getLength());
+    ASSERT_INT_EQ(2, listQueue.getLinkedList()->get(0));
+    ASSERT_INT_EQ(3, listQueue.getLinkedList()->get(1));
+    ASSERT_INT_EQ(4, listQueue.getLinkedList()->get(2));
+    ASSERT_INT_EQ(5, listQueue.getLinkedList()->get(3));
+}
+
+void LIST_QUEUE_GET_SUB_QUEUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    ListQueue<int> *subListQueue = listQueue.getSubQueue(1, 3);
+    ASSERT_INT_EQ(3, subListQueue->getLength());
+    ASSERT_INT_EQ(2, subListQueue->getLinkedList()->get(0));
+    ASSERT_INT_EQ(3, subListQueue->getLinkedList()->get(1));
+    ASSERT_INT_EQ(4, subListQueue->getLinkedList()->get(2));
+}
+
+void LIST_QUEUE_OUT_OF_RANGE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    try {
+        listQueue.getSubQueue(1, 10);
+    } catch (std::out_of_range &e) {
+        ASSERT_STRING_EQ("Index out of range", e.what());
+    }
+}
+
+void LIST_QUEUE_SPLIT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListQueue<int> listQueue(items, 5);
+    auto [firstQueue, secondQueue] = listQueue.split([](int x) { return x % 2 == 0; });
+    ASSERT_INT_EQ(2, firstQueue->getLength());
+    ASSERT_INT_EQ(2, firstQueue->getLinkedList()->get(0));
+    ASSERT_INT_EQ(4, firstQueue->getLinkedList()->get(1));
+    ASSERT_INT_EQ(3, secondQueue->getLength());
+    ASSERT_INT_EQ(1, secondQueue->getLinkedList()->get(0));
+    ASSERT_INT_EQ(3, secondQueue->getLinkedList()->get(1));
+    ASSERT_INT_EQ(5, secondQueue->getLinkedList()->get(2));
+}
+
+
