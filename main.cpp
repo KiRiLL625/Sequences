@@ -433,7 +433,7 @@ bool menu(){
                         std::cout << "Enter value: ";
                         std::cin >> value;
                         auto [firstQueue, secondQueue] = arrayQueue->split(
-                                [value](int x) { return x < value ? true : false; });
+                                [value](int x) { return x < value; });
                         std::cout << "First queue is: ";
                         firstQueue->print();
                         std::cout << "Second queue is: ";
@@ -464,6 +464,7 @@ bool menu(){
                     }
 
                     case 8: {
+                        delete arrayQueue;
                         return true;
                     }
 
@@ -473,8 +474,6 @@ bool menu(){
                     }
                 }
             } while (true);
-            delete arrayQueue;
-            break;
         }
 
         case 2: {
@@ -540,7 +539,7 @@ bool menu(){
                         std::cout << "Enter value: ";
                         std::cin >> value;
                         auto [firstQueue, secondQueue] = listQueue->split(
-                                [value](int x) { return x < value ? true : false; });
+                                [value](int x) { return x < value; });
                         std::cout << "First queue is: ";
                         firstQueue->print();
                         std::cout << "Second queue is: ";
@@ -571,6 +570,7 @@ bool menu(){
                     }
 
                     case 8: {
+                        delete listQueue;
                         return true;
                     }
 
@@ -580,8 +580,6 @@ bool menu(){
                     }
                 }
             } while (true);
-            delete listQueue;
-            break;
         }
 
         case 3:
@@ -590,9 +588,8 @@ bool menu(){
         default:
             std::cout << "Wrong choice" << std::endl;
             break;
-
-        return true;
     }
+    return true;
 }
 
 int main() {

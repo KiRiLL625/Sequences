@@ -19,7 +19,8 @@ public:
     virtual std::tuple<Queue<T>*, Queue<T>*> split(std::function<bool(T)> predicate) const = 0; //Разделение очереди на две по предикату
     virtual Queue<T>* concat(Queue<T>* queue) const = 0; //Сцепление двух очередей
     virtual int findSubQueue(Queue<T>* queue) const = 0; //Поиск подочереди
-    virtual void print() const; //Вывод очереди на экран
+    virtual void print() const = 0; //Вывод очереди на экран
+    virtual T get(int index) const = 0; //Получение элемента по индексу
     virtual ~Queue() = default; //Деструктор
     //map - применение функции к каждому элементу очереди
     friend void map(std::function<T(T)> f, Queue<T>* queue){
@@ -50,7 +51,6 @@ public:
         }
         queue->push(result); //Добавление результата в конец очереди
     }
-
 };
 
 #endif //SEQUENCES_QUEUE_H

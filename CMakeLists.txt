@@ -3,33 +3,22 @@ project(Sequences)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Sequences
-        Sequence.h
+set(HEADERS ArrayDeque.h
+        ArrayQueue.h
         ArraySequence.h
-        ListSequence.h
+        Deque.h
         DynamicArray.h
-        LinkedList.h
-        main.cpp
         ImmutableArraySequence.h
         ImmutableListSequence.h
-        ArrayQueue.h
+        LinkedList.h
+        ListDeque.h
         ListQueue.h
+        ListSequence.h
         Queue.h
-)
+        Matrix.h
+        Sequence.h)
 
-add_executable(
-        Test
-        Sequence.h
-        ArraySequence.h
-        ListSequence.h
-        DynamicArray.h
-        LinkedList.h
-        test.cpp
-        ImmutableArraySequence.h
-        ImmutableListSequence.h
-        ArrayQueue.h
-        ListQueue.h
-        Queue.h
-        test.h
-        main_test.cpp
-)
+set(SOURCES Matrix.cpp)
+
+add_executable(Sequences main.cpp ${HEADERS} ${SOURCES})
+add_executable(Test main_test.cpp test.cpp test.h ${HEADERS} ${SOURCES})

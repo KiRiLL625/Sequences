@@ -92,7 +92,7 @@ public:
         auto* newQueue = new ArrayQueue<T>(*this);
         //Добавление элементов из второй очереди
         for (int i = 0; i < arrayQueue->getLength(); i++) {
-            newQueue->push(arrayQueue->arrayQueue->get(i));
+            newQueue->push(arrayQueue->get(i));
         }
         return newQueue; //Возврат новой очереди
     }
@@ -107,7 +107,7 @@ public:
         for (int i = 0; i < this->arrayQueue->getLength() - subQueue->getLength() + 1; i++) { //Проход по массиву
             bool isFound = true; //Флаг, показывающий, найдена ли подочередь
             for (int j = 0; j < subQueue->getLength(); j++) { //Проход по подочереди
-                if (this->arrayQueue->get(i + j) != subQueue->arrayQueue->get(j)) { //Если элементы не совпадают, то флаг становится false
+                if (this->arrayQueue->get(i + j) != subQueue->get(j)) { //Если элементы не совпадают, то флаг становится false
                     isFound = false;
                     break;
                 }
@@ -117,6 +117,14 @@ public:
             }
         }
         return -1; //Иначе возвращается -1
+    }
+
+    T get(int index) const override {
+        return this->arrayQueue->get(index); //Получение элемента по индексу
+    }
+
+    DynamicArray<T>* getArray() const {
+        return this->arrayQueue->getArray(); //Получение массива
     }
 
     ~ArrayQueue() override {

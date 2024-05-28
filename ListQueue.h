@@ -77,7 +77,7 @@ public:
     Queue<T>* concat(Queue<T>* listQueue) const override {
         auto* newQueue = new ListQueue<T>(*this);
         for (int i = 0; i < listQueue->getLength(); i++) {
-            newQueue->push(listQueue->listQueue->get(i));
+            newQueue->push(listQueue->get(i));
         }
         return newQueue;
     }
@@ -89,7 +89,7 @@ public:
         for (int i = 0; i < this->listQueue->getLength() - subQueue->getLength() + 1; i++) {
             bool isFound = true;
             for (int j = 0; j < subQueue->getLength(); j++) {
-                if (this->listQueue->get(i + j) != subQueue->listQueue->get(j)) {
+                if (this->listQueue->get(i + j) != subQueue->get(j)) {
                     isFound = false;
                     break;
                 }
@@ -103,6 +103,14 @@ public:
 
     void print() const override{
         this->listQueue->print();
+    }
+
+    T get(int index) const override {
+        return this->listQueue->get(index);
+    }
+
+    LinkedList<T>* getLinkedList() const {
+        return this->listQueue->getLinkedList();
     }
 
     ~ListQueue() override {

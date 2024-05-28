@@ -11,9 +11,13 @@
 #include "ArrayQueue.h"
 #include "ListQueue.h"
 #include "Queue.h"
+#include "ArrayDeque.h"
+#include "Deque.h"
+#include "ListDeque.h"
+#include "Matrix.h"
 
 int tests_passed; //количество пройденных тестов
-const int total_tests = 122; //общее количество тестов
+const int total_tests = 411; //общее количество тестов
 
 //Проверка на создание пустой последовательности на основе массива
 void CREATE_ARRAY_SEQUENCE(){
@@ -420,11 +424,11 @@ void ARRAY_QUEUE_POP(){
 void ARRAY_QUEUE_GET_SUB_QUEUE(){
     int items[] = {1, 2, 3, 4, 5};
     ArrayQueue<int> arrayQueue(items, 5);
-    ArrayQueue<int> *subArrayQueue = arrayQueue.getSubQueue(1, 3);
+    Queue<int> *subArrayQueue = arrayQueue.getSubQueue(1, 3);
     ASSERT_INT_EQ(3, subArrayQueue->getLength());
-    ASSERT_INT_EQ(2, subArrayQueue->getArray()->get(0));
-    ASSERT_INT_EQ(3, subArrayQueue->getArray()->get(1));
-    ASSERT_INT_EQ(4, subArrayQueue->getArray()->get(2));
+    ASSERT_INT_EQ(2, subArrayQueue->get(0));
+    ASSERT_INT_EQ(3, subArrayQueue->get(1));
+    ASSERT_INT_EQ(4, subArrayQueue->get(2));
 }
 
 void ARRAY_QUEUE_OUT_OF_RANGE(){
@@ -442,12 +446,12 @@ void ARRAY_QUEUE_SPLIT(){
     ArrayQueue<int> arrayQueue(items, 5);
     auto [firstQueue, secondQueue] = arrayQueue.split([](int x) { return x % 2 == 0; });
     ASSERT_INT_EQ(2, firstQueue->getLength());
-    ASSERT_INT_EQ(2, firstQueue->getArray()->get(0));
-    ASSERT_INT_EQ(4, firstQueue->getArray()->get(1));
+    ASSERT_INT_EQ(2, firstQueue->get(0));
+    ASSERT_INT_EQ(4, firstQueue->get(1));
     ASSERT_INT_EQ(3, secondQueue->getLength());
-    ASSERT_INT_EQ(1, secondQueue->getArray()->get(0));
-    ASSERT_INT_EQ(3, secondQueue->getArray()->get(1));
-    ASSERT_INT_EQ(5, secondQueue->getArray()->get(2));
+    ASSERT_INT_EQ(1, secondQueue->get(0));
+    ASSERT_INT_EQ(3, secondQueue->get(1));
+    ASSERT_INT_EQ(5, secondQueue->get(2));
 }
 
 void CREATE_LIST_QUEUE(){
@@ -513,11 +517,11 @@ void LIST_QUEUE_POP(){
 void LIST_QUEUE_GET_SUB_QUEUE(){
     int items[] = {1, 2, 3, 4, 5};
     ListQueue<int> listQueue(items, 5);
-    ListQueue<int> *subListQueue = listQueue.getSubQueue(1, 3);
+    Queue<int> *subListQueue = listQueue.getSubQueue(1, 3);
     ASSERT_INT_EQ(3, subListQueue->getLength());
-    ASSERT_INT_EQ(2, subListQueue->getLinkedList()->get(0));
-    ASSERT_INT_EQ(3, subListQueue->getLinkedList()->get(1));
-    ASSERT_INT_EQ(4, subListQueue->getLinkedList()->get(2));
+    ASSERT_INT_EQ(2, subListQueue->get(0));
+    ASSERT_INT_EQ(3, subListQueue->get(1));
+    ASSERT_INT_EQ(4, subListQueue->get(2));
 }
 
 void LIST_QUEUE_OUT_OF_RANGE(){
@@ -535,12 +539,373 @@ void LIST_QUEUE_SPLIT(){
     ListQueue<int> listQueue(items, 5);
     auto [firstQueue, secondQueue] = listQueue.split([](int x) { return x % 2 == 0; });
     ASSERT_INT_EQ(2, firstQueue->getLength());
-    ASSERT_INT_EQ(2, firstQueue->getLinkedList()->get(0));
-    ASSERT_INT_EQ(4, firstQueue->getLinkedList()->get(1));
+    ASSERT_INT_EQ(2, firstQueue->get(0));
+    ASSERT_INT_EQ(4, firstQueue->get(1));
     ASSERT_INT_EQ(3, secondQueue->getLength());
-    ASSERT_INT_EQ(1, secondQueue->getLinkedList()->get(0));
-    ASSERT_INT_EQ(3, secondQueue->getLinkedList()->get(1));
-    ASSERT_INT_EQ(5, secondQueue->getLinkedList()->get(2));
+    ASSERT_INT_EQ(1, secondQueue->get(0));
+    ASSERT_INT_EQ(3, secondQueue->get(1));
+    ASSERT_INT_EQ(5, secondQueue->get(2));
 }
 
+void CREATE_ARRAY_DEQUE(){
+    ArrayDeque<int> arrayDeque;
+    ASSERT_INT_EQ(0, arrayDeque.getLength());
+    ASSERT_NOT_NULL(arrayDeque.getArrayDeque()->getArray());
+    ASSERT_INT_EQ(0, arrayDeque.getLength());
+}
 
+void CREATE_ARRAY_DEQUE_FROM_ARRAY(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    ASSERT_INT_EQ(5, arrayDeque.getLength());
+    ASSERT_NOT_NULL(arrayDeque.getArrayDeque()->getArray());
+    ASSERT_INT_EQ(5, arrayDeque.getArrayDeque()->getArray()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], arrayDeque.getArrayDeque()->getArray()->get(i));
+    }
+}
+
+void COPY_ARRAY_DEQUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    ArrayDeque<int> arrayDequeCopy(arrayDeque);
+    ASSERT_INT_EQ(5, arrayDequeCopy.getLength());
+    ASSERT_NOT_NULL(arrayDequeCopy.getArrayDeque()->getArray());
+    ASSERT_INT_EQ(5, arrayDequeCopy.getArrayDeque()->getArray()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], arrayDequeCopy.getArrayDeque()->getArray()->get(i));
+    }
+}
+
+void ARRAY_DEQUE_PUSH_FRONT(){
+    ArrayDeque<int> arrayDeque;
+    arrayDeque.push_front(1);
+    ASSERT_INT_EQ(1, arrayDeque.getLength());
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(0));
+    arrayDeque.push_front(2);
+    ASSERT_INT_EQ(2, arrayDeque.getLength());
+    ASSERT_INT_EQ(2, arrayDeque.getArrayDeque()->getArray()->get(0));
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(1));
+    arrayDeque.push_front(3);
+    ASSERT_INT_EQ(3, arrayDeque.getLength());
+    ASSERT_INT_EQ(3, arrayDeque.getArrayDeque()->getArray()->get(0));
+    ASSERT_INT_EQ(2, arrayDeque.getArrayDeque()->getArray()->get(1));
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(2));
+}
+
+void ARRAY_DEQUE_PUSH_BACK(){
+    ArrayDeque<int> arrayDeque;
+    arrayDeque.push_back(1);
+    ASSERT_INT_EQ(1, arrayDeque.getLength());
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(0));
+    arrayDeque.push_back(2);
+    ASSERT_INT_EQ(2, arrayDeque.getLength());
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(0));
+    ASSERT_INT_EQ(2, arrayDeque.getArrayDeque()->getArray()->get(1));
+    arrayDeque.push_back(3);
+    ASSERT_INT_EQ(3, arrayDeque.getLength());
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(0));
+    ASSERT_INT_EQ(2, arrayDeque.getArrayDeque()->getArray()->get(1));
+    ASSERT_INT_EQ(3, arrayDeque.getArrayDeque()->getArray()->get(2));
+}
+
+void ARRAY_DEQUE_FRONT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    ASSERT_INT_EQ(1, arrayDeque.front());
+}
+
+void ARRAY_DEQUE_BACK(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    ASSERT_INT_EQ(5, arrayDeque.back());
+}
+
+void ARRAY_DEQUE_POP_FRONT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    arrayDeque.pop_front();
+    ASSERT_INT_EQ(4, arrayDeque.getLength());
+    ASSERT_INT_EQ(2, arrayDeque.getArrayDeque()->getArray()->get(0));
+    ASSERT_INT_EQ(3, arrayDeque.getArrayDeque()->getArray()->get(1));
+    ASSERT_INT_EQ(4, arrayDeque.getArrayDeque()->getArray()->get(2));
+    ASSERT_INT_EQ(5, arrayDeque.getArrayDeque()->getArray()->get(3));
+}
+
+void ARRAY_DEQUE_POP_BACK(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    arrayDeque.pop_back();
+    ASSERT_INT_EQ(4, arrayDeque.getLength());
+    ASSERT_INT_EQ(1, arrayDeque.getArrayDeque()->getArray()->get(0));
+    ASSERT_INT_EQ(2, arrayDeque.getArrayDeque()->getArray()->get(1));
+    ASSERT_INT_EQ(3, arrayDeque.getArrayDeque()->getArray()->get(2));
+    ASSERT_INT_EQ(4, arrayDeque.getArrayDeque()->getArray()->get(3));
+}
+
+void ARRAY_DEQUE_GET_SUB_DEQUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    Deque<int> *subArrayDeque = arrayDeque.getSubDeque(1, 3);
+    ASSERT_INT_EQ(3, subArrayDeque->getLength());
+    ASSERT_INT_EQ(2, subArrayDeque->get(0));
+    ASSERT_INT_EQ(3, subArrayDeque->get(1));
+    ASSERT_INT_EQ(4, subArrayDeque->get(2));
+}
+
+void ARRAY_DEQUE_OUT_OF_RANGE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    try {
+        arrayDeque.getSubDeque(1, 10);
+    } catch (std::out_of_range &e) {
+        ASSERT_STRING_EQ("Index out of range", e.what());
+    }
+}
+
+void ARRAY_DEQUE_SPLIT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ArrayDeque<int> arrayDeque(items, 5);
+    auto [firstDeque, secondDeque] = arrayDeque.split([](int x) { return x % 2 == 0; });
+    ASSERT_INT_EQ(2, firstDeque->getLength());
+    ASSERT_INT_EQ(2, firstDeque->get(0));
+    ASSERT_INT_EQ(4, firstDeque->get(1));
+    ASSERT_INT_EQ(3, secondDeque->getLength());
+    ASSERT_INT_EQ(1, secondDeque->get(0));
+    ASSERT_INT_EQ(3, secondDeque->get(1));
+    ASSERT_INT_EQ(5, secondDeque->get(2));
+}
+
+void CREATE_LIST_DEQUE(){
+    ListDeque<int> listDeque;
+    ASSERT_INT_EQ(0, listDeque.getLength());
+    ASSERT_NOT_NULL(listDeque.getListDeque());
+    ASSERT_INT_EQ(0, listDeque.getListDeque()->getLength());
+}
+
+void CREATE_LIST_DEQUE_FROM_ARRAY(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    ASSERT_INT_EQ(5, listDeque.getLength());
+    ASSERT_NOT_NULL(listDeque.getListDeque());
+    ASSERT_INT_EQ(5, listDeque.getListDeque()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], listDeque.getListDeque()->get(i));
+    }
+}
+
+void COPY_LIST_DEQUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    ListDeque<int> listDequeCopy(listDeque);
+    ASSERT_INT_EQ(5, listDequeCopy.getLength());
+    ASSERT_NOT_NULL(listDequeCopy.getListDeque());
+    ASSERT_INT_EQ(5, listDequeCopy.getListDeque()->getLength());
+    for (int i = 0; i < 5; i++) {
+        ASSERT_INT_EQ(items[i], listDequeCopy.getListDeque()->get(i));
+    }
+}
+
+void LIST_DEQUE_PUSH_FRONT(){
+    ListDeque<int> listDeque;
+    listDeque.push_front(1);
+    ASSERT_INT_EQ(1, listDeque.getLength());
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(0));
+    listDeque.push_front(2);
+    ASSERT_INT_EQ(2, listDeque.getLength());
+    ASSERT_INT_EQ(2, listDeque.getListDeque()->get(0));
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(1));
+    listDeque.push_front(3);
+    ASSERT_INT_EQ(3, listDeque.getLength());
+    ASSERT_INT_EQ(3, listDeque.getListDeque()->get(0));
+    ASSERT_INT_EQ(2, listDeque.getListDeque()->get(1));
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(2));
+}
+
+void LIST_DEQUE_PUSH_BACK(){
+    ListDeque<int> listDeque;
+    listDeque.push_back(1);
+    ASSERT_INT_EQ(1, listDeque.getLength());
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(0));
+    listDeque.push_back(2);
+    ASSERT_INT_EQ(2, listDeque.getLength());
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(0));
+    ASSERT_INT_EQ(2, listDeque.getListDeque()->get(1));
+    listDeque.push_back(3);
+    ASSERT_INT_EQ(3, listDeque.getLength());
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(0));
+    ASSERT_INT_EQ(2, listDeque.getListDeque()->get(1));
+    ASSERT_INT_EQ(3, listDeque.getListDeque()->get(2));
+}
+
+void LIST_DEQUE_FRONT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    ASSERT_INT_EQ(1, listDeque.front());
+}
+
+void LIST_DEQUE_BACK(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    ASSERT_INT_EQ(5, listDeque.back());
+}
+
+void LIST_DEQUE_POP_FRONT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    listDeque.pop_front();
+    ASSERT_INT_EQ(4, listDeque.getLength());
+    ASSERT_INT_EQ(2, listDeque.getListDeque()->get(0));
+    ASSERT_INT_EQ(3, listDeque.getListDeque()->get(1));
+    ASSERT_INT_EQ(4, listDeque.getListDeque()->get(2));
+    ASSERT_INT_EQ(5, listDeque.getListDeque()->get(3));
+}
+
+void LIST_DEQUE_POP_BACK(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    listDeque.pop_back();
+    ASSERT_INT_EQ(4, listDeque.getLength());
+    ASSERT_INT_EQ(1, listDeque.getListDeque()->get(0));
+    ASSERT_INT_EQ(2, listDeque.getListDeque()->get(1));
+    ASSERT_INT_EQ(3, listDeque.getListDeque()->get(2));
+    ASSERT_INT_EQ(4, listDeque.getListDeque()->get(3));
+}
+
+void LIST_DEQUE_GET_SUB_DEQUE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    Deque<int> *subListDeque = listDeque.getSubDeque(1, 3);
+    ASSERT_INT_EQ(3, subListDeque->getLength());
+    ASSERT_INT_EQ(2, subListDeque->get(0));
+    ASSERT_INT_EQ(3, subListDeque->get(1));
+    ASSERT_INT_EQ(4, subListDeque->get(2));
+}
+
+void LIST_DEQUE_OUT_OF_RANGE(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    try {
+        listDeque.getSubDeque(1, 10);
+    } catch (std::out_of_range &e) {
+        ASSERT_STRING_EQ("Index out of range", e.what());
+    }
+}
+
+void LIST_DEQUE_SPLIT(){
+    int items[] = {1, 2, 3, 4, 5};
+    ListDeque<int> listDeque(items, 5);
+    auto [firstDeque, secondDeque] = listDeque.split([](int x) { return x % 2 == 0; });
+    ASSERT_INT_EQ(2, firstDeque->getLength());
+    ASSERT_INT_EQ(2, firstDeque->get(0));
+    ASSERT_INT_EQ(4, firstDeque->get(1));
+    ASSERT_INT_EQ(3, secondDeque->getLength());
+    ASSERT_INT_EQ(1, secondDeque->get(0));
+    ASSERT_INT_EQ(3, secondDeque->get(1));
+    ASSERT_INT_EQ(5, secondDeque->get(2));
+}
+
+void CREATE_MATRIX(){
+    Matrix matrix(3, 3);
+    ASSERT_INT_EQ(3, matrix.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(0, matrix[i][j]);
+        }
+    }
+}
+
+void CREATE_MATRIX_FROM_VECTOR(){
+    std::vector<std::vector<double>> items = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix(items);
+    ASSERT_INT_EQ(3, matrix.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items[i][j], matrix[i][j]);
+        }
+    }
+}
+
+void COPY_MATRIX(){
+    std::vector<std::vector<double>> items = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix(items);
+    Matrix matrixCopy(matrix);
+    ASSERT_INT_EQ(3, matrixCopy.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items[i][j], matrixCopy[i][j]);
+        }
+    }
+}
+
+void MATRIX_SUM(){
+    std::vector<std::vector<double>> items1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix1(items1);
+    std::vector<std::vector<double>> items2 = {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}};
+    Matrix matrix2(items2);
+    Matrix matrixSum = matrix1 + matrix2;
+    ASSERT_INT_EQ(3, matrixSum.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items1[i][j] + items2[i][j], matrixSum[i][j]);
+        }
+    }
+}
+
+void MATRIX_DIFFERENCE(){
+    std::vector<std::vector<double>> items1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix1(items1);
+    std::vector<std::vector<double>> items2 = {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}};
+    Matrix matrix2(items2);
+    Matrix matrixDifference = matrix1 - matrix2;
+    ASSERT_INT_EQ(3, matrixDifference.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items1[i][j] - items2[i][j], matrixDifference[i][j]);
+        }
+    }
+}
+
+void MATRIX_MULTIPLICATION(){
+    std::vector<std::vector<double>> items1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix1(items1);
+    std::vector<std::vector<double>> items2 = {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}};
+    Matrix matrix2(items2);
+    Matrix matrixMultiplication = matrix1 * matrix2;
+    ASSERT_INT_EQ(3, matrixMultiplication.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items1[i][0] * items2[0][j] + items1[i][1] * items2[1][j] + items1[i][2] * items2[2][j], matrixMultiplication[i][j]);
+        }
+    }
+}
+
+void MATRIX_MULTIPLICATION_BY_NUMBER(){
+    std::vector<std::vector<double>> items = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix(items);
+    Matrix matrixMultiplication = matrix * 2;
+    ASSERT_INT_EQ(3, matrixMultiplication.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items[i][j] * 2, matrixMultiplication[i][j]);
+        }
+    }
+}
+
+void MATRIX_DETERMINANT(){
+    std::vector<std::vector<double>> items = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix(items);
+    ASSERT_INT_EQ(0, matrix.determinant());
+}
+
+void MATRIX_TRANSPOSE(){
+    std::vector<std::vector<double>> items = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    Matrix matrix(items);
+    Matrix matrixTranspose = matrix.transpose();
+    ASSERT_INT_EQ(3, matrixTranspose.getRows());
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            ASSERT_INT_EQ(items[j][i], matrixTranspose[i][j]);
+        }
+    }
+}
