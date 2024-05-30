@@ -21,6 +21,7 @@ public:
     virtual int findSubQueue(Queue<T>* queue) const = 0; //Поиск подочереди
     virtual void print() const = 0; //Вывод очереди на экран
     virtual T get(int index) const = 0; //Получение элемента по индексу
+    virtual LinkedList<T>* getLinkedList() const = 0; //Получение двусвязного списка
     virtual ~Queue() = default; //Деструктор
     //map - применение функции к каждому элементу очереди
     friend void map(std::function<T(T)> f, Queue<T>* queue){

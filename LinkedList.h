@@ -18,6 +18,9 @@ private:
         Node* prev; //указатель на предыдущий узел
         //Конструктор узла - создает узел с заданным значением
         explicit Node(T value) : value(value), next(nullptr), prev(nullptr) {}
+        void setNext(Node* next) {
+            this->next = next;
+        }
         ~Node() = default;
     };
 
@@ -193,6 +196,18 @@ public:
             current = current->next;
         }
         return newList;
+    }
+
+    Node* getFirstNode() const {
+        return this->head;
+    }
+
+    Node* getLastNode() const {
+        return this->tail;
+    }
+
+    void setSize(int size) {
+        this->length = size;
     }
 
     ~LinkedList() { //деструктор

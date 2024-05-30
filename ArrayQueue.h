@@ -127,6 +127,10 @@ public:
         return this->arrayQueue->getArray(); //Получение массива
     }
 
+    LinkedList<T>* getLinkedList() const override {
+        return nullptr;
+    }
+
     ~ArrayQueue() override {
         delete this->arrayQueue; //Удаление массива
     }

@@ -76,9 +76,8 @@ public:
 
     Queue<T>* concat(Queue<T>* listQueue) const override {
         auto* newQueue = new ListQueue<T>(*this);
-        for (int i = 0; i < listQueue->getLength(); i++) {
-            newQueue->push(listQueue->get(i));
-        }
+        newQueue->getLinkedList()->getLastNode()->setNext(listQueue->getLinkedList()->getFirstNode());
+        newQueue->getLinkedList()->setSize(newQueue->getLinkedList()->getLength() + listQueue->getLength());
         return newQueue;
     }
 
@@ -109,7 +108,7 @@ public:
         return this->listQueue->get(index);
     }
 
-    LinkedList<T>* getLinkedList() const {
+    LinkedList<T>* getLinkedList() const override {
         return this->listQueue->getLinkedList();
     }
 
