@@ -3,22 +3,21 @@ project(Sequences)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(HEADERS ArrayDeque.h
-        ArrayQueue.h
+set(HEADERS
         ArraySequence.h
-        Deque.h
         DynamicArray.h
-        ImmutableArraySequence.h
-        ImmutableListSequence.h
         LinkedList.h
-        ListDeque.h
-        ListQueue.h
         ListSequence.h
-        Queue.h
-        Matrix.h
-        Sequence.h)
+        Sequence.h
+        ISorter.h
+        QSorter.h
+        PSorter.h
+        BubbleSorter.h)
 
-set(SOURCES Matrix.cpp)
+set(SOURCES main.cpp)
 
-add_executable(Sequences main.cpp ${HEADERS} ${SOURCES})
-add_executable(Test main_test.cpp test.cpp test.h ${HEADERS} ${SOURCES})
+add_subdirectory(testing)
+add_subdirectory(googletest)
+
+add_executable(Sequences ${HEADERS} ${SOURCES})
+#add_executable(Test main_test.cpp test.cpp test.h ${HEADERS} ${SOURCES})

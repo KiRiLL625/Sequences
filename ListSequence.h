@@ -42,7 +42,7 @@ public:
     }
 
     //Функция, которая возвращает элемент последовательности по индексу index
-    T get(int index) const override {
+    T& get(int index) const override {
         return this->linkedList->get(index);
     }
 
@@ -116,6 +116,11 @@ public:
     //Оператор [], который возвращает элемент последовательности по индексу index
     T operator[](int index) const override {
         return this->linkedList->get(index);
+    }
+
+    //Функция, которая очищает последовательность
+    void clear() override {
+        this->linkedList->clear();
     }
 
     //Деструктор

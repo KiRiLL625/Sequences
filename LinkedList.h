@@ -75,7 +75,7 @@ public:
     }
 
     //Функция, которая возвращает элемент списка по индексу
-    T get(int index) const {
+    T& get(int index) const {
         //если индекс меньше 0 или больше длины списка, то выбрасываем исключение
         if (index < 0 || index >= this->length) {
             throw std::out_of_range("Index out of range");
@@ -208,6 +208,18 @@ public:
 
     void setSize(int size) {
         this->length = size;
+    }
+
+    void clear() {
+        Node* current = this->head;
+        while (current != nullptr) {
+            Node* next = current->next;
+            delete current;
+            current = next;
+        }
+        this->head = nullptr;
+        this->tail = nullptr;
+        this->length = 0;
     }
 
     ~LinkedList() { //деструктор

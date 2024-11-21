@@ -43,7 +43,7 @@ public:
     }
 
     //Функция, которая возвращает элемент массива по индексу index
-    T get(int index) const {
+    T& get(int index) const {
         if (index < 0 || index >= this->length) {
             throw std::out_of_range("Index out of range");
         }
@@ -108,6 +108,14 @@ public:
         }
         delete[] this->array;
         this->array = newArray;
+    }
+
+    //Функция, которая очищает массив
+    void clear(){
+        this->length = 0;
+        this->capacity = 10;
+        delete[] this->array;
+        this->array = new T[this->capacity];
     }
 
     ~DynamicArray(){

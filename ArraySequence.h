@@ -47,7 +47,7 @@ public:
     }
 
     //Функция, которая возвращает элемент последовательности по индексу index
-    T get(int index) const override {
+    T& get(int index) const override {
         return this->arrayList->get(index);
     }
 
@@ -123,6 +123,11 @@ public:
     //Оператор [], который возвращает элемент последовательности по индексу
     T operator[](int index) const override {
         return this->arrayList->get(index);
+    }
+
+    //Функция, которая очищает последовательность
+    void clear() override {
+        this->arrayList->clear();
     }
 
     ~ArraySequence() { //деструктор
