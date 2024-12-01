@@ -12,7 +12,9 @@ set(HEADERS
         ISorter.h
         QSorter.h
         PSorter.h
-        BubbleSorter.h)
+        BubbleSorter.h
+        Car.h
+        Pet.h)
 
 set(SOURCES main.cpp)
 

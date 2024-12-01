@@ -130,6 +130,11 @@ public:
         this->arrayList->clear();
     }
 
+    //Функция, которая создает копию последовательности
+    ArraySequence<T>* copy() const override {
+        return new ArraySequence<T>(*this);
+    }
+
     ~ArraySequence() { //деструктор
         delete this->arrayList;
     }

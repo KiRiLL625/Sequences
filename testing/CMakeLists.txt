@@ -13,7 +13,9 @@ set(HEADERS
         ../ISorter.h
         ../QSorter.h
         ../PSorter.h
-        ../BubbleSorter.h)
+        ../BubbleSorter.h
+        ../Car.h
+        ../Pet.h)
 
 add_executable(test test.cpp ${HEADERS})
 target_link_libraries(test gtest gtest_main)

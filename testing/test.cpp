@@ -284,3 +284,51 @@ TEST(BubbleSorter, SortList){
     }
     delete listSequence;
 }
+
+TEST(QSorter, SortEmpty){
+    Sequence<int> *arraySequence = new ArraySequence<int>();
+    QSorter<int> qSorter;
+    qSorter.sort(arraySequence, ascendingComparator<int>, 0);
+    EXPECT_EQ(arraySequence->getLength(), 0);
+    delete arraySequence;
+}
+
+TEST(PSorter, SortEmpty){
+    Sequence<int> *arraySequence = new ArraySequence<int>();
+    PSorter<int> pSorter;
+    pSorter.sort(arraySequence, ascendingComparator<int>, 0);
+    EXPECT_EQ(arraySequence->getLength(), 0);
+    delete arraySequence;
+}
+
+TEST(BubbleSorter, SortEmpty){
+    Sequence<int> *arraySequence = new ArraySequence<int>();
+    BubbleSorter<int> bubbleSorter;
+    bubbleSorter.sort(arraySequence, ascendingComparator<int>, 0);
+    EXPECT_EQ(arraySequence->getLength(), 0);
+    delete arraySequence;
+}
+
+TEST(QSorter, SortListEmpty){
+    Sequence<int> *listSequence = new ListSequence<int>();
+    QSorter<int> qSorter;
+    qSorter.sort(listSequence, ascendingComparator<int>, 0);
+    EXPECT_EQ(listSequence->getLength(), 0);
+    delete listSequence;
+}
+
+TEST(PSorter, SortListEmpty){
+    Sequence<int> *listSequence = new ListSequence<int>();
+    PSorter<int> pSorter;
+    pSorter.sort(listSequence, ascendingComparator<int>, 0);
+    EXPECT_EQ(listSequence->getLength(), 0);
+    delete listSequence;
+}
+
+TEST(BubbleSorter, SortListEmpty){
+    Sequence<int> *listSequence = new ListSequence<int>();
+    BubbleSorter<int> bubbleSorter;
+    bubbleSorter.sort(listSequence, ascendingComparator<int>, 0);
+    EXPECT_EQ(listSequence->getLength(), 0);
+    delete listSequence;
+}

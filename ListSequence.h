@@ -123,6 +123,11 @@ public:
         this->linkedList->clear();
     }
 
+    //Функция, которая создает копию последовательности
+    ListSequence<T>* copy() const override {
+        return new ListSequence<T>(*this);
+    }
+
     //Деструктор
     ~ListSequence() override {
         delete this->linkedList;
