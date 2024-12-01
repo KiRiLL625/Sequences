@@ -15,9 +15,13 @@ set(HEADERS
         ../PSorter.h
         ../BubbleSorter.h
         ../Car.h
-        ../Pet.h)
+        ../Pet.h
+)
 
-add_executable(test test.cpp ${HEADERS})
+add_executable(test test.cpp ${HEADERS}
+        ArraySequenceTests.cpp
+        ListSequenceTests.cpp
+        SortTests.cpp)
 target_link_libraries(test gtest gtest_main)
 include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 include(GoogleTest)
